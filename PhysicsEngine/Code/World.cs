@@ -12,7 +12,7 @@ namespace PhysicsEngine
     {
         private readonly Color BACKGROUND_COLOR = new Color(21, 21, 21);
 
-        private readonly Vector2 GRAVITY = new Vector2(0, 30);
+        private readonly Vector2 GRAVITY = new Vector2(0, 100);
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -29,8 +29,8 @@ namespace PhysicsEngine
 
         protected override void Initialize()
         {
-            this.graphics.PreferredBackBufferHeight = 750;
             this.graphics.PreferredBackBufferWidth = 1280;
+            this.graphics.PreferredBackBufferHeight = 750;
             this.graphics.ApplyChanges();
 
             base.Initialize();
@@ -40,18 +40,21 @@ namespace PhysicsEngine
         {
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Body bodyQuad = new BodyBuilder()
+            this.ShapeList.Add(new BodyBuilder()
                 .SetShape(new Quad(20, 20, 0, Color.White, this))
                 .SetPosition(new Vector2(200, 200))
-                .Build();
+                .Build());
 
-            Body bodyCircle = new BodyBuilder()
+            this.ShapeList.Add(new BodyBuilder()
                 .SetShape(new Circle(20, 0, Color.Red, this, 50))
                 .SetPosition(new Vector2(500, 400))
-                .Build();
+                .Build());
 
-            this.ShapeList.Add(bodyQuad);
-            this.ShapeList.Add(bodyCircle);
+            this.ShapeList.Add(new BodyBuilder()
+                .SetShape(new Quad(1000, 40, 0, Color.DarkGreen, this))
+                .SetPosition(new Vector2(600, 680))
+                .SetPhysics(false)
+                .Build());
         }
 
         protected override void Update(GameTime gameTime)
