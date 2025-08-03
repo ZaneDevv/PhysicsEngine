@@ -1,7 +1,6 @@
 ﻿using PhysicsEngine.Render;
 using Microsoft.Xna.Framework;
 
-
 namespace PhysicsEngine.Bodies
 {
     internal class Body
@@ -13,6 +12,7 @@ namespace PhysicsEngine.Bodies
 
         private RenderShape shape;
 
+        private Vector2 velocity;
         private Vector2 position;
 
         internal Body(
@@ -30,7 +30,13 @@ namespace PhysicsEngine.Bodies
             this.position = position;
 
             this.shape.Position = this.position;
+
+            this.velocity = Vector2.Zero;
         }
+
+
+
+        #region GETTERS & SETTERS
 
         internal bool IsCollideable
         {
@@ -55,5 +61,23 @@ namespace PhysicsEngine.Bodies
             get => this.shape;
             private set => this.shape = value;
         }
+
+        internal Vector2 Position
+        {
+            get => this.position;
+            set
+            {
+                this.position = value;
+                this.shape.Position = this.position;
+            }
+        }
+
+        internal Vector2 Velocity
+        {
+            get => this.velocity;
+            set => this.velocity = value;
+        }
+
+        #endregion
     }
 }

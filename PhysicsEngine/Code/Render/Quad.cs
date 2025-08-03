@@ -6,7 +6,8 @@ using System;
     Class destinated to create quads in the screen with a certain position, rotation, size and color. 
 */
 
-namespace PhysicsEngine.Render {
+namespace PhysicsEngine.Render
+{
     internal class Quad : RenderShape
     {
         #region ATTRIBUTES

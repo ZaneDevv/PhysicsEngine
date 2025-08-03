@@ -12,6 +12,8 @@ namespace PhysicsEngine
     {
         private readonly Color BACKGROUND_COLOR = new Color(21, 21, 21);
 
+        private readonly Vector2 GRAVITY = new Vector2(0, 30);
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -54,6 +56,15 @@ namespace PhysicsEngine
 
         protected override void Update(GameTime gameTime)
         {
+            double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
+
+            foreach (Body body in this.ShapeList)
+            {
+                if (!body.DoesPhysicsAffect) continue;
+
+                body.Velocity += GRAVITY * (float)deltaTime;
+                body.Position += body.Velocity * (float)deltaTime;
+            }
 
             base.Update(gameTime);
         }
