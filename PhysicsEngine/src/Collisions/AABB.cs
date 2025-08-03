@@ -2,7 +2,8 @@
 {
     internal struct AABB
     {
-        double minX, maxX, minY, maxY;
+        double minX, maxX;
+        double minY, maxY;
 
         internal AABB(double minX, double maxX, double minY, double maxY)
         {
