@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using PhysicsEngine.Bodies;
 using PhysicsEngine.Render;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PhysicsEngine
 {
@@ -68,12 +67,30 @@ namespace PhysicsEngine
         {
             double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
 
+            List<Body> BodiesToRemove = new List<Body>();
+
             foreach (Body body in this.ShapeList)
             {
+                bool isTooDown = body.Position.Y > this.graphics.PreferredBackBufferHeight + body.Shape.Size.Y;
+                bool isTooRight = body.Position.X > this.graphics.PreferredBackBufferWidth + body.Shape.Size.X;
+                bool isTooLeft = body.Position.X < -body.Shape.Size.X;
+                bool willBeRemoved = isTooDown || isTooLeft || isTooRight;
+
+                if (willBeRemoved)
+                {
+                    BodiesToRemove.Add(body);
+                    continue;
+                }
+
                 if (!body.DoesPhysicsAffect) continue;
 
                 body.Velocity += GRAVITY * (float)deltaTime;
                 body.Position += body.Velocity * (float)deltaTime;
+            }
+
+            foreach (Body body in BodiesToRemove)
+            {
+                this.ShapeList.Remove(body);
             }
 
             base.Update(gameTime);
