@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace PhysicsEngine.Render
 {
     internal abstract class RenderShape
     {
+        #region ATTRIBUTES
+
         protected Vector3 position;
         protected Vector2 size;
 
@@ -13,9 +16,27 @@ namespace PhysicsEngine.Render
 
         protected World world;
 
+        protected double rotation;
+        protected double sin;
+        protected double cos;
+
+        #endregion
+
+
+        /// <summary>
+        /// Updates the whole shape as the vertices to apply size, rotation and position
+        /// </summary>
         protected abstract void UpdateShape();
+
+        /// <summary>
+        /// Updates 
+        /// </summary>
         protected abstract void UpdateVertexPositionColor();
 
+
+        /// <summary>
+        /// Updates all the vertex colors when either the vertices or the color change
+        /// </summary>
         protected void SetEffect()
         {
             this.effect = new BasicEffect(this.world.GraphicsDevice);
@@ -26,6 +47,9 @@ namespace PhysicsEngine.Render
             this.effect.PreferPerPixelLighting = false;
         }
 
+        /// <summary>
+        /// Renders then shape in the screen
+        /// </summary>
         internal virtual void Draw()
         {
             Viewport viewport = this.world.GraphicsDevice.Viewport;
@@ -34,6 +58,7 @@ namespace PhysicsEngine.Render
             this.effect.View = Matrix.Identity;
             this.effect.World = Matrix.Identity;
         }
+
 
         #region SETTERS & GETTERS
 
@@ -70,6 +95,20 @@ namespace PhysicsEngine.Render
             {
                 this.size = value;
                 this.UpdateShape();
+            }
+        }
+
+        internal double Rotation
+        {
+            get => this.rotation;
+            set
+            {
+                this.rotation = value;
+
+                this.sin = Math.Sin(this.rotation);
+                this.cos = Math.Cos(this.rotation);
+
+                UpdateShape();
             }
         }
 

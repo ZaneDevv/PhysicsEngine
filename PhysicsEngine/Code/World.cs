@@ -15,55 +15,51 @@ namespace PhysicsEngine
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private List<Quad> quadList = new List<Quad>();
+        private List<RenderShape> ShapeList = new List<RenderShape>();
 
 
         internal World()
         {
-            this.graphics = new GraphicsDeviceManager(this);
-            this.Content.RootDirectory = "Content";
-            this.IsMouseVisible = true;
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            this.graphics.PreferredBackBufferHeight = 750;
-            this.graphics.PreferredBackBufferWidth = 1280;
-            this.graphics.ApplyChanges();
+            graphics.PreferredBackBufferHeight = 750;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            quadList.Add(new Quad(30, 30, 200, 200, 0, Color.White, this));
+            ShapeList.Add(new Quad(30, 30, 200, 200, 0, Color.White, this));
+            ShapeList.Add(new Circle(30, 30, 100, 0, Color.Red, this, 50));
         }
 
         protected override void Update(GameTime gameTime)
         {
-            MouseState mouse = Mouse.GetState();
-            Quad quad = this.quadList.First();
-
-            quad.Rotation += MathHelper.Pi / 360;
-            quad.Position = new Vector2(mouse.X, mouse.Y);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            this.GraphicsDevice.Clear(BACKGROUND_COLOR);
+            GraphicsDevice.Clear(BACKGROUND_COLOR);
 
-            this.spriteBatch.Begin();
+            spriteBatch.Begin();
 
-            foreach (Quad quad in quadList)
+            foreach (RenderShape shape in ShapeList)
             {
-                quad.Draw();
+                shape.Draw();
             }
 
-            this.spriteBatch.End();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

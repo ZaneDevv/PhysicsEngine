@@ -14,15 +14,11 @@ namespace PhysicsEngine.Render {
         private Vector3[] Vertices = new Vector3[4];
         private VertexPositionColor[] VerticesColor = new VertexPositionColor[4];
         private short[] Indices = new short[6];
-
-        private double rotation;
-        private double sin;
-        private double cos;
         
         #endregion
 
         /// <summary>
-        /// Create a brand new quad from scratch
+        /// Createss a brand new quad from scratch
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
@@ -143,21 +139,6 @@ namespace PhysicsEngine.Render {
                     0,
                     2
                 );
-            }
-        }
-
-        
-        internal double Rotation
-        {
-            get => this.rotation;
-            set
-            {
-                this.rotation = value;
-
-                this.sin = Math.Sin(this.rotation);
-                this.cos = Math.Cos(this.rotation);
-
-                UpdateShape();
             }
         }
     }
