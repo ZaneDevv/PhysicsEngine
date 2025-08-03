@@ -15,31 +15,41 @@ namespace PhysicsEngine
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private List<RenderShape> ShapeList = new List<RenderShape>();
+        private List<Body> ShapeList = new List<Body>();
 
 
         internal World()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            this.graphics = new GraphicsDeviceManager(this);
+            this.Content.RootDirectory = "Content";
+            this.IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferHeight = 750;
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.ApplyChanges();
+            this.graphics.PreferredBackBufferHeight = 750;
+            this.graphics.PreferredBackBufferWidth = 1280;
+            this.graphics.ApplyChanges();
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            ShapeList.Add(new Quad(30, 30, 200, 200, 0, Color.White, this));
-            ShapeList.Add(new Circle(30, 30, 100, 0, Color.Red, this, 50));
+            Body bodyQuad = new BodyBuilder()
+                .SetShape(new Quad(20, 20, 0, Color.White, this))
+                .SetPosition(new Vector2(200, 200))
+                .Build();
+
+            Body bodyCircle = new BodyBuilder()
+                .SetShape(new Circle(20, 0, Color.Red, this, 50))
+                .SetPosition(new Vector2(500, 400))
+                .Build();
+
+            this.ShapeList.Add(bodyQuad);
+            this.ShapeList.Add(bodyCircle);
         }
 
         protected override void Update(GameTime gameTime)
@@ -50,16 +60,16 @@ namespace PhysicsEngine
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(BACKGROUND_COLOR);
+            this.GraphicsDevice.Clear(BACKGROUND_COLOR);
 
-            spriteBatch.Begin();
+            this.spriteBatch.Begin();
 
-            foreach (RenderShape shape in ShapeList)
+            foreach (Body body in this.ShapeList)
             {
-                shape.Draw();
+                body.Shape.Draw();
             }
 
-            spriteBatch.End();
+            this.spriteBatch.End();
 
             base.Draw(gameTime);
         }

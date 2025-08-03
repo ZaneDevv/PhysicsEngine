@@ -30,13 +30,13 @@ namespace PhysicsEngine.Render
         /// <param name="color">Circle's color</param>
         /// <param name="world">Circle's world</param>
         /// <param name="segments">Number of segments (smoothness)</param>
-        internal Circle(int x, int y, float radius, double rotation, Color color, World world, int segments = 36)
+        internal Circle(float radius, double rotation, Color color, World world, int segments = 36)
         {
             this.color = color;
             this.world = world;
             this.segments = Math.Max(3, segments);
 
-            this.position = new Vector3(x, y, 0);
+            this.position = Vector3.Zero;
             this.size = new Vector2(radius, radius);
 
             this.rotation = rotation;

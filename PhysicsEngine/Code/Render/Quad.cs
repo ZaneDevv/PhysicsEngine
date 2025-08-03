@@ -27,12 +27,12 @@ namespace PhysicsEngine.Render {
         /// <param name="rotation">Angle of rotation</param>
         /// <param name="color">Quad's color</param>
         /// <param name="world">Quad's world</param>
-        internal Quad(int x, int y, int width, int height, double rotation, Color color, World world)
+        internal Quad(int width, int height, double rotation, Color color, World world)
         {
             this.color = color;
             this.world = world;
 
-            this.position = new Vector3(x, y, 0);
+            this.position = Vector3.Zero;
             this.size = new Vector2(width / 2, height / 2);
 
             this.rotation = rotation;
