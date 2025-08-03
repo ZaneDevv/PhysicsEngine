@@ -41,6 +41,19 @@ namespace PhysicsEngine
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
             this.ShapeList.Add(new BodyBuilder()
+                .SetShape(new Quad(1000, 40, 0, Color.DarkGreen, this))
+                .SetPosition(new Vector2(600, 680))
+                .SetPhysics(false)
+                .Build());
+
+            this.ShapeList.Add(new BodyBuilder()
+                .SetShape(new Quad(400, 20, 0, Color.DarkGreen, this))
+                .SetPosition(new Vector2(200, 300))
+                .SetRotation(MathHelper.Pi / 6)
+                .SetPhysics(false)
+                .Build());
+
+            this.ShapeList.Add(new BodyBuilder()
                 .SetShape(new Quad(20, 20, 0, Color.White, this))
                 .SetPosition(new Vector2(200, 200))
                 .Build());
@@ -48,12 +61,6 @@ namespace PhysicsEngine
             this.ShapeList.Add(new BodyBuilder()
                 .SetShape(new Circle(20, 0, Color.Red, this, 50))
                 .SetPosition(new Vector2(500, 400))
-                .Build());
-
-            this.ShapeList.Add(new BodyBuilder()
-                .SetShape(new Quad(1000, 40, 0, Color.DarkGreen, this))
-                .SetPosition(new Vector2(600, 680))
-                .SetPhysics(false)
                 .Build());
         }
 

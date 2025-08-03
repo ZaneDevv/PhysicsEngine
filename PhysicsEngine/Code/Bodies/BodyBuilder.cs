@@ -16,6 +16,8 @@ namespace PhysicsEngine.Bodies
 
         private Vector2 position = Vector2.Zero;
 
+        private double rotation = 0;
+
         #endregion
 
         /// <summary>
@@ -74,12 +76,23 @@ namespace PhysicsEngine.Bodies
         }
 
         /// <summary>
+        /// Sets body's rotation
+        /// </summary>
+        /// <param name="rotation">Body's rotation</param>
+        /// <returns>The proper class</returns>
+        internal BodyBuilder SetRotation(double rotation)
+        {
+            this.rotation = rotation;
+            return this;
+        }
+
+        /// <summary>
         /// Creates a new body according to the specified properties
         /// </summary>
         /// <returns>Body created</returns>
         internal Body Build() => new Body(
             this.mass,
             this.isCollideable, this.doesPhysicsAffect,
-            this.shape, this.position);
+            this.shape, this.position, this.rotation);
     }
 }

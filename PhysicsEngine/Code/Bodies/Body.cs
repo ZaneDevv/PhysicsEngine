@@ -1,5 +1,6 @@
 ﻿using PhysicsEngine.Render;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace PhysicsEngine.Bodies
 {
@@ -15,10 +16,12 @@ namespace PhysicsEngine.Bodies
         private Vector2 velocity;
         private Vector2 position;
 
+        private double rotation;
+
         internal Body(
                 double mass,
                 bool isCollideable, bool doesPhysicsAffect,
-                RenderShape shape, Vector2 position
+                RenderShape shape, Vector2 position, double rotation
             )
         {
             this.mass = mass;
@@ -29,7 +32,10 @@ namespace PhysicsEngine.Bodies
             this.shape = shape;
             this.position = position;
 
+            this.rotation = rotation;
+
             this.shape.Position = this.position;
+            this.shape.Rotation = this.rotation;
 
             this.velocity = Vector2.Zero;
         }
@@ -76,6 +82,16 @@ namespace PhysicsEngine.Bodies
         {
             get => this.velocity;
             set => this.velocity = value;
+        }
+
+        internal double Rotation
+        {
+            get => this.rotation;
+            set
+            {
+                this.rotation = value;
+                this.shape.Rotation = this.rotation;
+            }
         }
 
         #endregion
