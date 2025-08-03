@@ -2,6 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
+/*
+    Class destinated to create queds in the screen with a certain position, rotation, size and color. 
+*/
+
 namespace PhysicsEngine.Render {
     internal class Quad
     {
@@ -24,6 +28,16 @@ namespace PhysicsEngine.Render {
         private double sin;
         private double cos;
 
+        /// <summary>
+        /// Create a brand new quad from scratch
+        /// </summary>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <param name="width">Size in X</param>
+        /// <param name="height">Size in Y</param>
+        /// <param name="rotation">Angle of rotation</param>
+        /// <param name="color">Quad's color</param>
+        /// <param name="world">Quad's world</param>
         internal Quad(int x, int y, int width, int height, double rotation, Color color, World world)
         {
             this.color = color;
@@ -47,6 +61,10 @@ namespace PhysicsEngine.Render {
             this.SetIndices();
         }
 
+        /// <summary>
+        /// Copies an existent quad
+        /// </summary>
+        /// <param name="quad">Quad to copy</param>
         internal Quad(Quad quad)
         {
             this.color = quad.Color;
@@ -70,6 +88,9 @@ namespace PhysicsEngine.Render {
             this.SetIndices();
         }
 
+        /// <summary>
+        /// Sets all the indices for the triangles making
+        /// </summary>
         private void SetIndices()
         {
             this.Indices[0] = 0;
@@ -80,12 +101,18 @@ namespace PhysicsEngine.Render {
             this.Indices[5] = 0;
         }
 
+        /// <summary>
+        /// Updates the whole shape when the rotation, size or position changes
+        /// </summary>
         private void UpdateShape()
         {
             UpdateVertices();
             UpdateVertexPositionColor();
         }
 
+        /// <summary>
+        /// Updates all the vertices of the quad when a property changes
+        /// </summary>
         private void UpdateVertices()
         {
             this.Vertices[0] = new Vector3(-this.size.X, -this.size.Y, 0);
@@ -103,6 +130,9 @@ namespace PhysicsEngine.Render {
             }
         }
 
+        /// <summary>
+        /// Updates all the vertex colors when either the vertices or the color change
+        /// </summary>
         private void UpdateVertexPositionColor()
         {
             this.VerticesColor[0] = new VertexPositionColor(this.Vertices[0], this.color);
@@ -111,6 +141,9 @@ namespace PhysicsEngine.Render {
             this.VerticesColor[3] = new VertexPositionColor(this.Vertices[3], this.color);
         }
 
+        /// <summary>
+        /// Renders then quead in the screen
+        /// </summary>
         internal void Draw()
         {
             Viewport viewport = this.world.GraphicsDevice.Viewport;
