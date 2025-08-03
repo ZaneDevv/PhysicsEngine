@@ -2,6 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
+/*
+    Class destinated to create circles in the screen with a certain position, rotation, size and color. 
+*/
+
 namespace PhysicsEngine.Render
 {
     internal class Circle : RenderShape

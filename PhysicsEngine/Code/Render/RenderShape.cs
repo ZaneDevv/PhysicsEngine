@@ -68,7 +68,7 @@ namespace PhysicsEngine.Render
             set
             {
                 this.color = value;
-                UpdateVertexPositionColor();
+                this.UpdateVertexPositionColor();
             }
         }
         internal World World
@@ -108,7 +108,7 @@ namespace PhysicsEngine.Render
                 this.sin = Math.Sin(this.rotation);
                 this.cos = Math.Cos(this.rotation);
 
-                UpdateShape();
+                this.UpdateShape();
             }
         }
 
