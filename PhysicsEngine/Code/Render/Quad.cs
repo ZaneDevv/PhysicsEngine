@@ -7,24 +7,13 @@ using System;
 */
 
 namespace PhysicsEngine.Render {
-    internal class Quad
+    internal class Quad : RenderShape
     {
         #region ATTRIBUTES
-
-        private Texture2D texture;
-        private bool textureInitialized = false;
 
         private Vector3[] Vertices = new Vector3[4];
         private VertexPositionColor[] VerticesColor = new VertexPositionColor[4];
         private short[] Indices = new short[6];
-
-        private BasicEffect effect;
-        private Color color;
-
-        private World world;
-
-        private Vector3 position;
-        private Vector2 size;
 
         private double rotation;
         private double sin;
@@ -47,13 +36,6 @@ namespace PhysicsEngine.Render {
             this.color = color;
             this.world = world;
 
-            this.effect = new BasicEffect(this.world.GraphicsDevice);
-            this.effect.FogEnabled = false;
-            this.effect.LightingEnabled = false;
-            this.effect.TextureEnabled = false;
-            this.effect.VertexColorEnabled = true;
-            this.effect.PreferPerPixelLighting = false;
-
             this.position = new Vector3(x, y, 0);
             this.size = new Vector2(width / 2, height / 2);
 
@@ -61,8 +43,10 @@ namespace PhysicsEngine.Render {
             this.sin = Math.Sin(this.rotation);
             this.cos = Math.Cos(this.rotation);
 
-            this.UpdateShape();
+            this.SetEffect();
+
             this.SetIndices();
+            this.UpdateShape();
         }
 
         /// <summary>
@@ -81,15 +65,10 @@ namespace PhysicsEngine.Render {
             this.sin = Math.Sin(this.rotation);
             this.cos = Math.Cos(this.rotation);
 
-            this.effect = new BasicEffect(this.world.GraphicsDevice);
-            this.effect.FogEnabled = false;
-            this.effect.LightingEnabled = false;
-            this.effect.TextureEnabled = false;
-            this.effect.VertexColorEnabled = true;
-            this.effect.PreferPerPixelLighting = false;
+            this.SetEffect();
 
-            this.UpdateShape();
             this.SetIndices();
+            this.UpdateShape();
         }
 
         /// <summary>
@@ -108,7 +87,7 @@ namespace PhysicsEngine.Render {
         /// <summary>
         /// Updates the whole shape when the rotation, size or position changes
         /// </summary>
-        private void UpdateShape()
+        protected override void UpdateShape()
         {
             UpdateVertices();
             UpdateVertexPositionColor();
@@ -148,12 +127,9 @@ namespace PhysicsEngine.Render {
         /// <summary>
         /// Renders then quead in the screen
         /// </summary>
-        internal void Draw()
+        internal override void Draw()
         {
-            Viewport viewport = this.world.GraphicsDevice.Viewport;
-            this.effect.Projection = Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
-            this.effect.View = Matrix.Identity;
-            this.effect.World = Matrix.Identity;
+            base.Draw();
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
