@@ -89,7 +89,7 @@ namespace PhysicsEngine.Bodies
         /// <summary>
         /// Creates a new body according to the specified properties
         /// </summary>
-        /// <returns>Body created</returns>
+        /// <returns>The body created</returns>
         internal Body Build() => new Body(
             this.mass,
             this.isCollideable, this.doesPhysicsAffect,
