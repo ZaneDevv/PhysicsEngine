@@ -9,6 +9,8 @@ using System;
 namespace PhysicsEngine.Render {
     internal class Quad
     {
+        #region ATTRIBUTES
+
         private Texture2D texture;
         private bool textureInitialized = false;
 
@@ -27,6 +29,8 @@ namespace PhysicsEngine.Render {
         private double rotation;
         private double sin;
         private double cos;
+        
+        #endregion
 
         /// <summary>
         /// Create a brand new quad from scratch
@@ -167,6 +171,8 @@ namespace PhysicsEngine.Render {
         }
 
 
+        #region SETTERS & GETTERS
+
         internal Color Color { 
             get => this.color;
             set {
@@ -212,5 +218,7 @@ namespace PhysicsEngine.Render {
                 UpdateShape();
             }
         }
+
+        #endregion
     }
 }
