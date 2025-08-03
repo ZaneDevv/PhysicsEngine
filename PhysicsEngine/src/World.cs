@@ -26,6 +26,7 @@ namespace PhysicsEngine
             this.IsMouseVisible = true;
         }
 
+
         protected override void Initialize()
         {
             this.graphics.PreferredBackBufferWidth = 1280;
@@ -34,6 +35,7 @@ namespace PhysicsEngine
 
             base.Initialize();
         }
+
 
         protected override void LoadContent()
         {
@@ -62,6 +64,7 @@ namespace PhysicsEngine
                 .SetPosition(new Vector2(500, 400))
                 .Build());
         }
+
 
         protected override void Update(GameTime gameTime)
         {
@@ -95,6 +98,7 @@ namespace PhysicsEngine
 
             base.Update(gameTime);
         }
+
 
         protected override void Draw(GameTime gameTime)
         {
