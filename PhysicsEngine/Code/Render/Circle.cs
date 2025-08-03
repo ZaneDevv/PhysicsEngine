@@ -9,5 +9,10 @@ namespace PhysicsEngine.Render
         {
             throw new NotImplementedException();
         }
+
+        protected override void UpdateVertexPositionColor()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

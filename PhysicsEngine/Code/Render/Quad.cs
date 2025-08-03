@@ -116,7 +116,7 @@ namespace PhysicsEngine.Render {
         /// <summary>
         /// Updates all the vertex colors when either the vertices or the color change
         /// </summary>
-        private void UpdateVertexPositionColor()
+        protected override void UpdateVertexPositionColor()
         {
             this.VerticesColor[0] = new VertexPositionColor(this.Vertices[0], this.color);
             this.VerticesColor[1] = new VertexPositionColor(this.Vertices[1], this.color);
@@ -146,41 +146,7 @@ namespace PhysicsEngine.Render {
             }
         }
 
-
-        #region SETTERS & GETTERS
-
-        internal Color Color { 
-            get => this.color;
-            set {
-                this.color = value;
-                UpdateVertexPositionColor();
-            }
-        }
-        internal World World { 
-            get => this.world;
-            private set { this.world = value; } 
-        }
-
-        internal Vector2 Position
-        {
-            get => new Vector2(this.position.X, this.position.Y);
-            set
-            {
-                Vector2 givenVector = value;
-                this.position = new Vector3(givenVector.X, givenVector.Y, 0);
-
-                this.UpdateShape();
-            }
-        }
-        internal Vector2 Size
-        {
-            get => this.size;
-            set
-            {
-                this.size = value;
-                this.UpdateShape();
-            }
-        }
+        
         internal double Rotation
         {
             get => this.rotation;
@@ -194,7 +160,5 @@ namespace PhysicsEngine.Render {
                 UpdateShape();
             }
         }
-
-        #endregion
     }
 }

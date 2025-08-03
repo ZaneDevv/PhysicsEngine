@@ -14,6 +14,7 @@ namespace PhysicsEngine.Render
         protected World world;
 
         protected abstract void UpdateShape();
+        protected abstract void UpdateVertexPositionColor();
 
         protected void SetEffect()
         {
@@ -33,5 +34,45 @@ namespace PhysicsEngine.Render
             this.effect.View = Matrix.Identity;
             this.effect.World = Matrix.Identity;
         }
+
+        #region SETTERS & GETTERS
+
+        internal Color Color
+        {
+            get => this.color;
+            set
+            {
+                this.color = value;
+                UpdateVertexPositionColor();
+            }
+        }
+        internal World World
+        {
+            get => this.world;
+            private set { this.world = value; }
+        }
+
+        internal Vector2 Position
+        {
+            get => new Vector2(this.position.X, this.position.Y);
+            set
+            {
+                Vector2 givenVector = value;
+                this.position = new Vector3(givenVector.X, givenVector.Y, 0);
+
+                this.UpdateShape();
+            }
+        }
+        internal Vector2 Size
+        {
+            get => this.size;
+            set
+            {
+                this.size = value;
+                this.UpdateShape();
+            }
+        }
+
+        #endregion
     }
 }
