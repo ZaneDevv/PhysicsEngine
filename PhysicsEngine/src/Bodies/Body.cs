@@ -54,6 +54,10 @@ namespace PhysicsEngine.Bodies
             this.angularVelocity = 0;
         }
 
+        /// <summary>
+        /// Updates the body's physics
+        /// </summary>
+        /// <param name="deltaTime">Time passed by since the last frame</param>
         internal void Update(double deltaTime)
         {
             this.linearVelocity += this.force * (float)deltaTime;
@@ -64,6 +68,10 @@ namespace PhysicsEngine.Bodies
             this.force = Vector2.Zero;
         }
 
+        /// <summary>
+        /// Applies a force to the body
+        /// </summary>
+        /// <param name="force">Force applied</param>
         internal void ApplyForce(Vector2 force)
         {
             this.force += force;
