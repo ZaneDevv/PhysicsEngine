@@ -3,10 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using PhysicsEngine.Collisions;
 using System;
 
-/*
-    Class destinated to create quads in the screen with a certain position, rotation, size and color. 
-*/
-
 namespace PhysicsEngine.Render
 {
     internal class Quad : RenderShape

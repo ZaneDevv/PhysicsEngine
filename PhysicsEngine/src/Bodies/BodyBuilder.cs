@@ -8,6 +8,7 @@ namespace PhysicsEngine.Bodies
         #region ATTRIBUTES
 
         private double mass = 1;
+        private double restitution = 1;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
@@ -29,6 +30,17 @@ namespace PhysicsEngine.Bodies
         internal BodyBuilder SetMass(double mass)
         {
             this.mass = mass;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the restitution for the body
+        /// </summary>
+        /// <param name="restitution">Body's restitution</param>
+        /// <returns>The proper class</returns>
+        internal BodyBuilder SetRestitution(double restitution)
+        {
+            this.restitution = restitution;
             return this;
         }
 
@@ -103,7 +115,7 @@ namespace PhysicsEngine.Bodies
         /// </summary>
         /// <returns>The body created</returns>
         internal Body Build() => new Body(
-            this.mass,
+            this.mass, this.restitution,
             this.isCollideable, this.doesPhysicsAffect,
             this.bodyType, this.shape, this.position, this.rotation);
     }

@@ -6,7 +6,10 @@ namespace PhysicsEngine.Bodies
 {
     internal class Body
     {
+        #region ATTRIBUTES
+
         private double mass;
+        private double restitution;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
@@ -14,18 +17,24 @@ namespace PhysicsEngine.Bodies
         private RenderShape shape;
         private BodyType bodyType;
 
-        private Vector2 velocity;
+        private Vector2 force;
+        private Vector2 linearVelocity;
         private Vector2 position;
 
+        private double angularVelocity;
         private double rotation;
 
+        #endregion
+
+
         internal Body(
-                double mass,
+                double mass, double restitution,
                 bool isCollideable, bool doesPhysicsAffect,
                 BodyType bodyType, RenderShape shape, Vector2 position, double rotation
             )
         {
             this.mass = mass;
+            this.restitution = restitution;
 
             this.isCollideable = isCollideable;
             this.doesPhysicsAffect = doesPhysicsAffect;
@@ -39,9 +48,26 @@ namespace PhysicsEngine.Bodies
             this.shape.Position = this.position;
             this.shape.Rotation = this.rotation;
 
-            this.velocity = Vector2.Zero;
+            this.force = Vector2.Zero;
+            this.linearVelocity = Vector2.Zero;
+
+            this.angularVelocity = 0;
         }
 
+        internal void Update(double deltaTime)
+        {
+            this.linearVelocity += this.force * (float)deltaTime;
+
+            this.Rotation += this.angularVelocity * (float)deltaTime;
+            this.Position += this.linearVelocity * (float)deltaTime;
+
+            this.force = Vector2.Zero;
+        }
+
+        internal void ApplyForce(Vector2 force)
+        {
+            this.force += force;
+        }
 
 
         #region GETTERS & SETTERS
@@ -62,6 +88,12 @@ namespace PhysicsEngine.Bodies
         {
             get => this.mass;
             private set => this.mass = value;
+        }
+
+        internal double Restitution
+        {
+            get => this.restitution;
+            set => this.restitution = value;
         }
 
         internal BodyType BodyType
@@ -86,10 +118,16 @@ namespace PhysicsEngine.Bodies
             }
         }
 
-        internal Vector2 Velocity
+        internal Vector2 LinearVelocity
         {
-            get => this.velocity;
-            set => this.velocity = value;
+            get => this.linearVelocity;
+            set => this.linearVelocity = value;
+        }
+
+        internal double AngularVelocity
+        {
+            get => this.angularVelocity;
+            set => this.angularVelocity = value;
         }
 
         internal double Rotation

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhysicsEngine.Bodies;
 using PhysicsEngine.Render;
+using System;
 using System.Collections.Generic;
 
 namespace PhysicsEngine
@@ -65,7 +66,7 @@ namespace PhysicsEngine
             this.ShapeList.Add(new BodyBuilder()
                 .SetBodyType(BodyType.Circle)
                 .SetShape(new Circle(20, 0, Color.Red, this, 50))
-                .SetPosition(new Vector2(500, 400))
+                .SetPosition(new Vector2(700, 400))
                 .Build());
 
             this.ShapeList.Add(new BodyBuilder()
@@ -98,8 +99,8 @@ namespace PhysicsEngine
 
                 if (!body.DoesPhysicsAffect) continue;
 
-                body.Velocity += GRAVITY * (float)deltaTime;
-                body.Position += body.Velocity * (float)deltaTime;
+                body.ApplyForce(GRAVITY);
+                body.Update(deltaTime);
             }
 
             // Removes unneccessary objects
@@ -109,7 +110,7 @@ namespace PhysicsEngine
             }
 
             // Solve collisions
-            for (int index = 0; index < 3; index++)
+            for (int index = 0; index < 5; index++)
             {
                 this.SolveCollisions();
             }
@@ -184,16 +185,22 @@ namespace PhysicsEngine
 
                     Vector2 normal2D = new Vector2(normal.X, normal.Y);
 
+                    double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
+                    double p = minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal2D) / (1 / body1.Mass + 1 / body2.Mass);
+
                     if (body1.DoesPhysicsAffect)
                     {
                         body1.Position += normal2D * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+                        body1.LinearVelocity += normal2D * (float)(p / body1.Mass);
                     }
                     if (body2.DoesPhysicsAffect)
                     {
                         body2.Position -= normal2D * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+                        body2.LinearVelocity -= normal2D * (float)(p / body2.Mass);
                     }
                 }
             }
         }
+    
     }
 }
