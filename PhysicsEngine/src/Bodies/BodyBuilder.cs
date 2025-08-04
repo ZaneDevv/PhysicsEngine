@@ -13,6 +13,7 @@ namespace PhysicsEngine.Bodies
         private bool doesPhysicsAffect = true;
 
         private RenderShape shape;
+        private BodyType bodyType;
 
         private Vector2 position = Vector2.Zero;
 
@@ -50,6 +51,17 @@ namespace PhysicsEngine.Bodies
         internal BodyBuilder SetPhysics(bool doesPhysicsAffect)
         {
             this.doesPhysicsAffect = doesPhysicsAffect;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets if the body is either a circle or a quad physically
+        /// </summary>
+        /// <param name="bodyType">Type of the body</param>
+        /// <returns>The proper class</returns>
+        internal BodyBuilder SetBodyType(BodyType bodyType)
+        {
+            this.bodyType = bodyType;
             return this;
         }
 
@@ -93,6 +105,6 @@ namespace PhysicsEngine.Bodies
         internal Body Build() => new Body(
             this.mass,
             this.isCollideable, this.doesPhysicsAffect,
-            this.shape, this.position, this.rotation);
+            this.bodyType, this.shape, this.position, this.rotation);
     }
 }

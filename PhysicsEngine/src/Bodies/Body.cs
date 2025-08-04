@@ -12,6 +12,7 @@ namespace PhysicsEngine.Bodies
         private bool doesPhysicsAffect = true;
 
         private RenderShape shape;
+        private BodyType bodyType;
 
         private Vector2 velocity;
         private Vector2 position;
@@ -21,7 +22,7 @@ namespace PhysicsEngine.Bodies
         internal Body(
                 double mass,
                 bool isCollideable, bool doesPhysicsAffect,
-                RenderShape shape, Vector2 position, double rotation
+                BodyType bodyType, RenderShape shape, Vector2 position, double rotation
             )
         {
             this.mass = mass;
@@ -30,6 +31,7 @@ namespace PhysicsEngine.Bodies
             this.doesPhysicsAffect = doesPhysicsAffect;
 
             this.shape = shape;
+            this.bodyType = bodyType;
             this.position = position;
 
             this.rotation = rotation;
@@ -60,6 +62,12 @@ namespace PhysicsEngine.Bodies
         {
             get => this.mass;
             private set => this.mass = value;
+        }
+
+        internal BodyType BodyType
+        {
+            get => this.bodyType;
+            private set => this.bodyType = value;
         }
 
         internal RenderShape Shape

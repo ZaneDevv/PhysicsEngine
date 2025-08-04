@@ -21,10 +21,20 @@
         /// <returns>Returns true if the two AABBs are overlaping and false if they are not</returns>
         internal static bool AreOverlaping(AABB aabb1, AABB aabb2)
         {
-            bool aabb1Overlaping = aabb1.minX < aabb2.maxX && aabb1.maxX > aabb2.minX;
-            bool aabb2Overlaping = aabb1.minY < aabb2.maxY && aabb1.maxY > aabb2.minY;
+            bool aabb1Overlaping = AreOverlaping(aabb1.minX, aabb1.maxX, aabb2.minX, aabb2.maxX);
+            bool aabb2Overlaping = AreOverlaping(aabb1.minY, aabb1.maxY, aabb2.minY, aabb2.maxY);
 
             return aabb1Overlaping || aabb2Overlaping;
         }
+
+        /// <summary>
+        /// Checks if a line intersects with another in 1D
+        /// </summary>
+        /// <param name="min1">The frist line minimum extreme</param>
+        /// <param name="max1">The frist line maximum extreme</param>
+        /// <param name="min2">The second line minimum extreme</param>
+        /// <param name="max2">The second line maximum extreme</param>
+        /// <returns>Returns if the lines defined by its extremes in 1D are overlaping</returns>
+        internal static bool AreOverlaping(double min1, double max1, double min2, double max2) => min1 < max2 && max1 > min2;
     }
 }

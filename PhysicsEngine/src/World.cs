@@ -42,12 +42,14 @@ namespace PhysicsEngine
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
             this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Quad)
                 .SetShape(new Quad(1000, 40, 0, Color.DarkGreen, this))
                 .SetPosition(new Vector2(600, 680))
                 .SetPhysics(false)
                 .Build());
 
             this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Quad)
                 .SetShape(new Quad(400, 20, 0, Color.DarkGreen, this))
                 .SetPosition(new Vector2(200, 300))
                 .SetRotation(MathHelper.Pi / 6)
@@ -55,11 +57,13 @@ namespace PhysicsEngine
                 .Build());
 
             this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Quad)
                 .SetShape(new Quad(20, 20, 0, Color.White, this))
                 .SetPosition(new Vector2(200, 200))
                 .Build());
 
             this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Circle)
                 .SetShape(new Circle(20, 0, Color.Red, this, 50))
                 .SetPosition(new Vector2(500, 400))
                 .Build());
@@ -94,6 +98,45 @@ namespace PhysicsEngine
             foreach (Body body in BodiesToRemove)
             {
                 this.ShapeList.Remove(body);
+            }
+
+            for (int i = 0; i < this.ShapeList.Count; i++)
+            {
+                Body body1 = this.ShapeList[i];
+                if (!body1.IsCollideable) continue;
+
+                for (int j = 0; j < this.ShapeList.Count; j++)
+                {
+                    Body body2 = this.ShapeList[j];
+                    if (!body2.IsCollideable) continue;
+
+                    Vector3 normal = Vector3.Zero;
+                    double depth = 0;
+                    bool areColliding = false;
+
+                    bool areBothPolygons = body1.BodyType == BodyType.Quad && body2.BodyType == BodyType.Quad;
+
+                    if (areBothPolygons)
+                    {
+                        Quad polygon1 = (Quad)body1.Shape;
+                        Quad polygon2 = (Quad)body2.Shape;
+
+                        areColliding = Collisions.Collision.Polygon_VS_Polygon(polygon1.Vertices, polygon2.Vertices, out normal, out depth);
+                    }
+
+                    if (!areColliding) continue;
+
+                    Vector2 normal2D = new Vector2(normal.X, normal.Y);
+
+                    if (body1.DoesPhysicsAffect)
+                    {
+                        body1.Position += normal2D * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+                    }
+                    if (body2.DoesPhysicsAffect)
+                    {
+                        body2.Position -= normal2D * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+                    }
+                }
             }
 
             base.Update(gameTime);

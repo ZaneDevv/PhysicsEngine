@@ -12,9 +12,9 @@ namespace PhysicsEngine.Render
     {
         #region ATTRIBUTES
 
-        private Vector3[] Vertices = new Vector3[4];
-        private VertexPositionColor[] VerticesColor = new VertexPositionColor[4];
-        private short[] Indices = new short[6];
+        private Vector3[] vertices = new Vector3[4];
+        private VertexPositionColor[] verticesColor = new VertexPositionColor[4];
+        private short[] indices = new short[6];
         
         #endregion
 
@@ -73,12 +73,12 @@ namespace PhysicsEngine.Render
         /// </summary>
         private void SetIndices()
         {
-            this.Indices[0] = 0;
-            this.Indices[1] = 1;
-            this.Indices[2] = 2;
-            this.Indices[3] = 2;
-            this.Indices[4] = 3;
-            this.Indices[5] = 0;
+            this.indices[0] = 0;
+            this.indices[1] = 1;
+            this.indices[2] = 2;
+            this.indices[3] = 2;
+            this.indices[4] = 3;
+            this.indices[5] = 0;
         }
 
         /// <summary>
@@ -95,18 +95,18 @@ namespace PhysicsEngine.Render
         /// </summary>
         private void UpdateVertices()
         {
-            this.Vertices[0] = new Vector3(-this.size.X, -this.size.Y, 0);
-            this.Vertices[1] = new Vector3(this.size.X, -this.size.Y, 0);
-            this.Vertices[2] = new Vector3(this.size.X, this.size.Y, 0);
-            this.Vertices[3] = new Vector3(-this.size.X, this.size.Y, 0);
+            this.vertices[0] = new Vector3(-this.size.X, -this.size.Y, 0);
+            this.vertices[1] = new Vector3(this.size.X, -this.size.Y, 0);
+            this.vertices[2] = new Vector3(this.size.X, this.size.Y, 0);
+            this.vertices[3] = new Vector3(-this.size.X, this.size.Y, 0);
 
             for (short index = 0; index < 4; index++)
             {
-                double newX = this.Vertices[index].X * this.cos - this.Vertices[index].Y * this.sin;
-                double newY = this.Vertices[index].X * this.sin + this.Vertices[index].Y * this.cos;
+                double newX = this.vertices[index].X * this.cos - this.vertices[index].Y * this.sin;
+                double newY = this.vertices[index].X * this.sin + this.vertices[index].Y * this.cos;
 
-                this.Vertices[index] = new Vector3((int)newX, (int)newY, 0);
-                this.Vertices[index] += this.position;
+                this.vertices[index] = new Vector3((int)newX, (int)newY, 0);
+                this.vertices[index] += this.position;
             }
         }
 
@@ -115,10 +115,10 @@ namespace PhysicsEngine.Render
         /// </summary>
         protected override void UpdateVertexPositionColor()
         {
-            this.VerticesColor[0] = new VertexPositionColor(this.Vertices[0], this.color);
-            this.VerticesColor[1] = new VertexPositionColor(this.Vertices[1], this.color);
-            this.VerticesColor[2] = new VertexPositionColor(this.Vertices[2], this.color);
-            this.VerticesColor[3] = new VertexPositionColor(this.Vertices[3], this.color);
+            this.verticesColor[0] = new VertexPositionColor(this.vertices[0], this.color);
+            this.verticesColor[1] = new VertexPositionColor(this.vertices[1], this.color);
+            this.verticesColor[2] = new VertexPositionColor(this.vertices[2], this.color);
+            this.verticesColor[3] = new VertexPositionColor(this.vertices[3], this.color);
         }
 
         /// <summary>
@@ -133,14 +133,25 @@ namespace PhysicsEngine.Render
                 pass.Apply();
                 this.world.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(
                     PrimitiveType.TriangleList,
-                    this.VerticesColor,
+                    this.verticesColor,
                     0,
                     4,
-                    this.Indices,
+                    this.indices,
                     0,
                     2
                 );
             }
         }
+
+
+        #region GETTERS & SETTERS
+
+        internal Vector3[] Vertices
+        {
+            get => this.vertices;
+            private set => this.vertices = value;
+        }
+
+        #endregion
     }
 }
