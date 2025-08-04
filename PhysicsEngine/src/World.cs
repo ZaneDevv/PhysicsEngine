@@ -99,7 +99,7 @@ namespace PhysicsEngine
 
                 if (!body.DoesPhysicsAffect) continue;
 
-                body.ApplyForce(GRAVITY);
+                body.ApplyForce(GRAVITY * (float)body.Mass);
                 body.Update(deltaTime);
             }
 
