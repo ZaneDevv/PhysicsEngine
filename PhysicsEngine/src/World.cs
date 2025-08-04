@@ -82,6 +82,7 @@ namespace PhysicsEngine
 
             List<Body> BodiesToRemove = new List<Body>();
 
+            // Applies gravity
             foreach (Body body in this.ShapeList)
             {
                 bool isTooDown = body.Position.Y > this.graphics.PreferredBackBufferHeight + body.Shape.Size.Y;
@@ -101,11 +102,41 @@ namespace PhysicsEngine
                 body.Position += body.Velocity * (float)deltaTime;
             }
 
+            // Removes unneccessary objects
             foreach (Body body in BodiesToRemove)
             {
                 this.ShapeList.Remove(body);
             }
 
+            // Solve collisions
+            for (int index = 0; index < 3; index++)
+            {
+                this.SolveCollisions();
+            }
+
+            base.Update(gameTime);
+        }
+
+
+        protected override void Draw(GameTime gameTime)
+        {
+            this.GraphicsDevice.Clear(BACKGROUND_COLOR);
+
+            this.spriteBatch.Begin();
+
+            foreach (Body body in this.ShapeList)
+            {
+                body.Shape.Draw();
+            }
+
+            this.spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
+
+        private void SolveCollisions()
+        {
             for (int i = 0; i < this.ShapeList.Count; i++)
             {
                 Body body1 = this.ShapeList[i];
@@ -163,25 +194,6 @@ namespace PhysicsEngine
                     }
                 }
             }
-
-            base.Update(gameTime);
-        }
-
-
-        protected override void Draw(GameTime gameTime)
-        {
-            this.GraphicsDevice.Clear(BACKGROUND_COLOR);
-
-            this.spriteBatch.Begin();
-
-            foreach (Body body in this.ShapeList)
-            {
-                body.Shape.Draw();
-            }
-
-            this.spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }

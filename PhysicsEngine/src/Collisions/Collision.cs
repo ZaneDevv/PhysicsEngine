@@ -92,14 +92,30 @@ namespace PhysicsEngine.Collisions
             List<Vector3> axes = new List<Vector3>();
             AddAxesFromVertices(ref axes, polygonVertices);
 
+            double closestDistance = double.MaxValue;
+            Vector3 closestPoint = Vector3.Zero;
+
+            foreach (Vector3 vertex in polygonVertices)
+            {
+                double squaredDistance = Vector3.DistanceSquared(vertex, circlePosition);
+
+                if (squaredDistance < closestDistance)
+                {
+                    closestDistance = squaredDistance;
+                    closestPoint = vertex;
+                }
+            }
+
+            axes.Add(Vector3.Normalize(closestPoint - circlePosition));
+
             foreach (Vector3 axis in axes)
             {
                 double min1, max1;
                 double min2, max2;
 
                 Vector3[] circlePseudovertices = new Vector3[2];
-                circlePseudovertices[0] = new Vector3(circlePosition.X - axis.X * (float)circleRadius, circlePosition.Y + axis.Y * (float)circleRadius, 0);
-                circlePseudovertices[1] = new Vector3(circlePosition.X + axis.X * (float)circleRadius, circlePosition.Y - axis.Y * (float)circleRadius, 0);
+                circlePseudovertices[0] = new Vector3(circlePosition.X, circlePosition.Y, 0) - axis * (float)circleRadius;
+                circlePseudovertices[1] = new Vector3(circlePosition.X, circlePosition.Y, 0) + axis * (float)circleRadius;
 
                 VerticesProjectionOntoAxis(axis, polygonVertices, out min1, out max1);
                 VerticesProjectionOntoAxis(axis, circlePseudovertices, out min2, out max2);
