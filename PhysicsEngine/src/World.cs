@@ -67,6 +67,12 @@ namespace PhysicsEngine
                 .SetShape(new Circle(20, 0, Color.Red, this, 50))
                 .SetPosition(new Vector2(500, 400))
                 .Build());
+
+            this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Circle)
+                .SetShape(new Circle(20, 0, Color.Red, this, 50))
+                .SetPosition(new Vector2(200, 100))
+                .Build());
         }
 
 
@@ -110,20 +116,37 @@ namespace PhysicsEngine
                     Body body2 = this.ShapeList[j];
                     if (!body2.IsCollideable) continue;
 
+                    if (body1 == body2) continue;
+
                     if (!Collisions.AABB.AreOverlaping(body1.Shape.GetAABB(), body2.Shape.GetAABB())) continue;
 
                     Vector3 normal = Vector3.Zero;
                     double depth = 0;
                     bool areColliding = false;
 
-                    bool areBothPolygons = body1.BodyType == BodyType.Quad && body2.BodyType == BodyType.Quad;
-
-                    if (areBothPolygons)
+                    if (body1.BodyType == BodyType.Quad && body2.BodyType == BodyType.Quad)
                     {
                         Quad polygon1 = (Quad)body1.Shape;
                         Quad polygon2 = (Quad)body2.Shape;
 
                         areColliding = Collisions.Collision.Polygon_VS_Polygon(polygon1.Vertices, polygon2.Vertices, out normal, out depth);
+                    }
+                    else if (body1.BodyType == BodyType.Circle && body2.BodyType == BodyType.Circle)
+                    {
+                        Circle circle1 = (Circle)body1.Shape;
+                        Circle circle2 = (Circle)body2.Shape;
+
+                        Vector3 position1 = new Vector3(circle1.Position.X, circle1.Position.Y, 0);
+                        Vector3 position2 = new Vector3(circle2.Position.X, circle2.Position.Y, 0);
+
+                        areColliding = Collisions.Collision.Circle_VS_Circle(position1, circle1.Radius, position2, circle2.Radius, out normal, out depth);
+                    }
+                    else
+                    {
+                        Quad polygon = (Quad)(body1.BodyType == BodyType.Quad ? body1.Shape : body2.Shape);
+                        Circle circle = (Circle)(body1.BodyType == BodyType.Circle ? body1.Shape : body2.Shape);
+
+                        areColliding = Collisions.Collision.Circle_VS_Polygon(polygon.Vertices, new Vector3(circle.Position.X, circle.Position.Y, 0), circle.Radius, out normal, out depth);
                     }
 
                     if (!areColliding) continue;

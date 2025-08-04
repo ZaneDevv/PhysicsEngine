@@ -50,35 +50,8 @@ namespace PhysicsEngine.Collisions
 
             List<Vector3> axes = new List<Vector3>();
 
-            void AddAxesFromVertices(Vector3[] vertices)
-            {
-                for (short index = 0; index < vertices.Length; index++)
-                {
-                    Vector3 currentVertex = vertices[index];
-                    Vector3 nextVertex = vertices[(index + 1) % vertices.Length];
-                    Vector3 edge = Vector3.Normalize(nextVertex - currentVertex);
-                    Vector3 axis = new Vector3(-edge.Y, edge.X, 0);
-
-                    axes.Add(axis);
-                }
-            }
-
-            void VerticesProjectionOntoAxis(Vector3 axis, Vector3[] vertices, out double min, out double max)
-            {
-                min = double.MaxValue;
-                max = double.MinValue;
-
-                foreach (Vector3 vertex in vertices)
-                {
-                    double projection = Vector3.Dot(vertex, axis);
-
-                    if (min > projection) min = projection;
-                    if (max < projection) max = projection;   
-                }
-            }
-
-            AddAxesFromVertices(vertices1);
-            AddAxesFromVertices(vertices2);
+            AddAxesFromVertices(ref axes, vertices1);
+            AddAxesFromVertices(ref axes, vertices2);
 
             foreach (Vector3 axis in axes)
             {
@@ -102,9 +75,86 @@ namespace PhysicsEngine.Collisions
             return true;
         }
 
-        internal static bool Circle_VS_Polygon()
+        /// <summary>
+        /// Checks and gives information about the possible collision betwee a polygon and a circle
+        /// </summary>
+        /// <param name="polygonVertices">Polygon's vertices</param>
+        /// <param name="circlePosition">Circle's center position</param>
+        /// <param name="circleRadius">Circle's radius</param>
+        /// <param name="normal">The collisions' normal vector</param>
+        /// <param name="depth">How much are the polygons overlaping</param>
+        /// <returns></returns>
+        internal static bool Circle_VS_Polygon(Vector3[] polygonVertices, Vector3 circlePosition, double circleRadius, out Vector3 normal, out double depth)
         {
+            normal = Vector3.Zero;
+            depth = double.MaxValue;
+
+            List<Vector3> axes = new List<Vector3>();
+            AddAxesFromVertices(ref axes, polygonVertices);
+
+            foreach (Vector3 axis in axes)
+            {
+                double min1, max1;
+                double min2, max2;
+
+                Vector3[] circlePseudovertices = new Vector3[2];
+                circlePseudovertices[0] = new Vector3(circlePosition.X - axis.X * (float)circleRadius, circlePosition.Y + axis.Y * (float)circleRadius, 0);
+                circlePseudovertices[1] = new Vector3(circlePosition.X + axis.X * (float)circleRadius, circlePosition.Y - axis.Y * (float)circleRadius, 0);
+
+                VerticesProjectionOntoAxis(axis, polygonVertices, out min1, out max1);
+                VerticesProjectionOntoAxis(axis, circlePseudovertices, out min2, out max2);
+
+                if (!AABB.AreOverlaping(min1, max1, min2, max2)) return false;
+
+                double minDepth = Math.Min(max1 - min2, max2 - min1);
+
+                if (minDepth < depth)
+                {
+                    depth = minDepth;
+                    normal = axis;
+                }
+            }
+
             return true;
+        }
+
+        /// <summary>
+        /// Adds the normals of each edge to a list for axes
+        /// </summary>
+        /// <param name="axesList">Axes list</param>
+        /// <param name="vertices">Vertices to calculate the normals and axes</param>
+        private static void AddAxesFromVertices(ref List<Vector3> axesList, Vector3[] vertices)
+        {
+            for (short index = 0; index < vertices.Length; index++)
+            {
+                Vector3 currentVertex = vertices[index];
+                Vector3 nextVertex = vertices[(index + 1) % vertices.Length];
+                Vector3 edge = Vector3.Normalize(nextVertex - currentVertex);
+                Vector3 axis = new Vector3(-edge.Y, edge.X, 0);
+
+                axesList.Add(axis);
+            }
+        }
+
+        /// <summary>
+        /// Projects the vertices of a shape onto an axis
+        /// </summary>
+        /// <param name="axis">The axis to project onto</param>
+        /// <param name="vertices">The vertices to project</param>
+        /// <param name="min">The minimum value of the projection</param>
+        /// <param name="max">The maximum value of the projection</param>
+        private static void VerticesProjectionOntoAxis(Vector3 axis, Vector3[] vertices, out double min, out double max)
+        {
+            min = double.MaxValue;
+            max = double.MinValue;
+
+            foreach (Vector3 vertex in vertices)
+            {
+                double projection = Vector3.Dot(vertex, axis);
+
+                if (min > projection) min = projection;
+                if (max < projection) max = projection;
+            }
         }
     }
 }
