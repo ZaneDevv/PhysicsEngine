@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsEngine.Collisions;
 using System;
 
 namespace PhysicsEngine.Render
@@ -29,10 +30,15 @@ namespace PhysicsEngine.Render
         protected abstract void UpdateShape();
 
         /// <summary>
-        /// Updates 
+        /// Updates the vertices position color
         /// </summary>
         protected abstract void UpdateVertexPositionColor();
 
+        /// <summary>
+        /// Gets a simplified AABB manifold
+        /// </summary>
+        /// <returns>The AABB obtained</returns>
+        internal abstract AABB GetAABB();
 
         /// <summary>
         /// Updates all the vertex colors when either the vertices or the color change

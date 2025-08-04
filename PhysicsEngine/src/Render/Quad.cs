@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsEngine.Collisions;
 using System;
 
 /*
@@ -142,6 +143,12 @@ namespace PhysicsEngine.Render
                 );
             }
         }
+
+        /// <summary>
+        /// Gets a simplified AABB manifold
+        /// </summary>
+        /// <returns>The AABB obtained</returns>
+        internal override AABB GetAABB() => new AABB(this.position.X - this.size.X, this.position.X + this.size.X, this.position.Y - this.size.Y, this.position.Y + this.size.Y);
 
 
         #region GETTERS & SETTERS

@@ -110,6 +110,8 @@ namespace PhysicsEngine
                     Body body2 = this.ShapeList[j];
                     if (!body2.IsCollideable) continue;
 
+                    if (!Collisions.AABB.AreOverlaping(body1.Shape.GetAABB(), body2.Shape.GetAABB())) continue;
+
                     Vector3 normal = Vector3.Zero;
                     double depth = 0;
                     bool areColliding = false;
