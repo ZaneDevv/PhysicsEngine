@@ -8,6 +8,8 @@ namespace PhysicsEngine.Collisions
 {
     internal struct Collision
     {
+        private static readonly double Epsilon = 0.005;
+
         /// <summary>
         /// Checks and gives information about the possible collision betwee two circles
         /// </summary>
@@ -18,7 +20,7 @@ namespace PhysicsEngine.Collisions
         /// <param name="normal">The collisions' normal vector</param>
         /// <param name="depth">How much are the circles overlaping</param>
         /// <returns>Returns if the two circles are overlaping</returns>
-        internal static bool Circle_VS_Circle(Vector3 center1, double radius1, Vector3 center2, double radius2, out Vector3 normal, out double depth)
+        internal static bool Circle_VS_Circle(Vector3 center1, double radius1, Vector3 center2, double radius2, ref Vector3 normal, ref double depth)
         {
             double radiusAddition = radius1 + radius2;
             double distance = Vector3.Distance(center1, center2);
@@ -45,7 +47,7 @@ namespace PhysicsEngine.Collisions
         /// <param name="normal">The collisions' normal vector</param>
         /// <param name="depth">How much are the polygons overlaping</param>
         /// <returns>Returns if the two polygons are overlaping</returns>
-        internal static bool Polygon_VS_Polygon(Vector3[] vertices1, Vector3[] vertices2, out Vector3 normal, out double depth)
+        internal static bool Polygon_VS_Polygon(Vector3[] vertices1, Vector3[] vertices2, ref Vector3 normal, ref double depth)
         {
             normal = Vector3.Zero;
             depth = double.MaxValue;
@@ -57,11 +59,8 @@ namespace PhysicsEngine.Collisions
 
             foreach (Vector3 axis in axes)
             {
-                double min1, max1;
-                double min2, max2;
-
-                VerticesProjectionOntoAxis(axis, vertices1, out min1, out max1);
-                VerticesProjectionOntoAxis(axis, vertices2, out min2, out max2);
+                VerticesProjectionOntoAxis(axis, vertices1, out double min1, out double max1);
+                VerticesProjectionOntoAxis(axis, vertices2, out double min2, out double max2);
 
                 if (!AABB.AreOverlaping(min1, max1, min2, max2)) return false;
 
@@ -86,7 +85,7 @@ namespace PhysicsEngine.Collisions
         /// <param name="normal">The collisions' normal vector</param>
         /// <param name="depth">How much are the polygons overlaping</param>
         /// <returns></returns>
-        internal static bool Circle_VS_Polygon(Vector3[] polygonVertices, Vector3 circlePosition, double circleRadius, out Vector3 normal, out double depth)
+        internal static bool Circle_VS_Polygon(Vector3[] polygonVertices, Vector3 circlePosition, double circleRadius, ref Vector3 normal, ref double depth)
         {
             normal = Vector3.Zero;
             depth = double.MaxValue;
@@ -112,16 +111,14 @@ namespace PhysicsEngine.Collisions
 
             foreach (Vector3 axis in axes)
             {
-                double min1, max1;
-                double min2, max2;
 
                 Vector3[] circlePseudovertices = new Vector3[] {
                     new Vector3(circlePosition.X, circlePosition.Y, 0) - axis * (float)circleRadius,
                     new Vector3(circlePosition.X, circlePosition.Y, 0) + axis * (float)circleRadius
                 };
 
-                VerticesProjectionOntoAxis(axis, polygonVertices, out min1, out max1);
-                VerticesProjectionOntoAxis(axis, circlePseudovertices, out min2, out max2);
+                VerticesProjectionOntoAxis(axis, polygonVertices, out double min1, out double max1);
+                VerticesProjectionOntoAxis(axis, circlePseudovertices, out double min2, out double max2);
 
                 if (!AABB.AreOverlaping(min1, max1, min2, max2)) return false;
 
@@ -184,7 +181,7 @@ namespace PhysicsEngine.Collisions
         /// <param name="pointsAmount">Contact points amount [1, 2]</param>
         /// <param name="contactPoint1">First contact point</param>
         /// <param name="contactPoint2">Possible second contact point</param>
-        internal static void GetContactCollisionPoints(Body body1, Body body2, out short pointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2)
+        internal static void GetContactCollisionPoints(Body body1, Body body2, ref short pointsAmount, ref Vector3 contactPoint1, ref Vector3 contactPoint2)
         {
             pointsAmount = 0;
             contactPoint1 = Vector3.Zero;
@@ -207,16 +204,96 @@ namespace PhysicsEngine.Collisions
                 Quad quad1 = (Quad)body1.Shape;
                 Quad quad2 = (Quad)body2.Shape;
 
-                Vector3[] vertices1 = quad1.Vertices;
-                Vector3[] vertices2 = quad2.Vertices;
+                double minimumDistance = double.MaxValue;
+
+                void GetContactPoints(Vector3[] vertices1, Vector3[] vertices2, ref short pointsAmount, ref Vector3 contactPoint1, ref Vector3 contactPoint2)
+                {
+                    for (short i = 0; i < vertices1.Length; i++)
+                    {
+                        Vector3 vertex1 = vertices1[i];
+
+                        for (short j = 0; j < vertices2.Length; j++)
+                        {
+                            Vector3 vertex2 = vertices2[j];
+                            Vector3 nextVertex2 = vertices2[(j + 1) % vertices2.Length];
+
+                            double squaredDistance = Collision.SquaredDistancePointSegment(vertex1, vertex2, nextVertex2, out Vector3 pointInLine);
+
+                            if (Collision.AreNumberClose(squaredDistance, minimumDistance))
+                            {
+                                bool arePointsCloseInX = Collision.AreNumberClose(contactPoint1.X, pointInLine.X);
+                                bool arePointsCloseInY = Collision.AreNumberClose(contactPoint1.Y, pointInLine.Y);
+
+                                if (arePointsCloseInX && arePointsCloseInY) continue;
+
+                                pointsAmount = 2;
+                                contactPoint2 = pointInLine;
+                            }
+                            else if (squaredDistance < minimumDistance)
+                            {
+                                pointsAmount = 1;
+                                minimumDistance = squaredDistance;
+                                contactPoint1 = pointInLine;
+                            }
+                        }
+                    }
+
+                    GetContactPoints(quad1.Vertices, quad2.Vertices, ref pointsAmount, ref contactPoint1, ref contactPoint2);
+                    GetContactPoints(quad2.Vertices, quad1.Vertices, ref pointsAmount, ref contactPoint1, ref contactPoint2);
+                }
             }
             else
             {
+                pointsAmount = 1;
+
                 Quad quad = (Quad)(body1.BodyType is BodyType.Quad ? body1.Shape : body2.Shape);
                 Circle circle = (Circle)(body1.BodyType is BodyType.Circle ? body1.Shape : body2.Shape);
 
-                Vector3[] vertices = quad.Vertices;
+                Vector3 circlePosiiton = new Vector3(circle.Position.X, circle.Position.Y, 0);
+
+                double closestSuqaredDistance = double.MaxValue;
+
+                for (short i = 0; i < quad.Vertices.Length; i++)
+                {
+                    Vector3 vertex = quad.Vertices[i];
+                    Vector3 nextVertex = quad.Vertices[(i + 1) % quad.Vertices.Length];
+
+                    double squaredDistance = Collision.SquaredDistancePointSegment(circlePosiiton, vertex, nextVertex, out Vector3 pointInLine);
+
+                    if (squaredDistance < closestSuqaredDistance)
+                    {
+                        closestSuqaredDistance = squaredDistance;
+                        contactPoint1 = pointInLine;
+                    }
+                }
             }
         }
+
+        /// <summary>
+        /// Calculates the squared distance to the closets point in a line enclosed by two points
+        /// </summary>
+        /// <param name="point">Point to get the distance</param>
+        /// <param name="segmentPoint1">First point to define the line</param>
+        /// <param name="segmentPoint2">Second point to define the line</param>
+        /// <returns>Closets squared distance to the point from any point in the line</returns>
+        private static double SquaredDistancePointSegment(Vector3 point, Vector3 segmentPoint1, Vector3 segmentPoint2, out Vector3 pointInLine)
+        {
+            Vector3 line = segmentPoint2 - segmentPoint1;
+
+            double projection = Vector3.Dot(line, point - segmentPoint1);
+            double normalizedPorjection = projection / (double)line.LengthSquared();
+
+            pointInLine = normalizedPorjection < 0 ? segmentPoint1 : normalizedPorjection > 1 ? segmentPoint2 : segmentPoint1 + line * (float)normalizedPorjection;
+
+            return Vector3.DistanceSquared(point, pointInLine);
+        }
+
+        /// <summary>
+        /// Checks if two numbers are close enough to each other
+        /// </summary>
+        /// <param name="x">First number to compare</param>
+        /// <param name="y">Second number to compare</param>
+        /// <returns>Returns if the numbers are close to each other</returns>
+        private static bool AreNumberClose(double x, double y) => Math.Abs(x - y) <= Collision.Epsilon;
     }
 }

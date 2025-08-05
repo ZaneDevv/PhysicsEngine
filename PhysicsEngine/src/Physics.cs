@@ -92,7 +92,7 @@ namespace PhysicsEngine.Physics
                         Quad polygon1 = (Quad)body1.Shape;
                         Quad polygon2 = (Quad)body2.Shape;
 
-                        areColliding = Collisions.Collision.Polygon_VS_Polygon(polygon1.Vertices, polygon2.Vertices, out normal, out depth);
+                        areColliding = Collisions.Collision.Polygon_VS_Polygon(polygon1.Vertices, polygon2.Vertices, ref normal, ref depth);
                     }
                     else if (body1.BodyType is BodyType.Circle && body2.BodyType is BodyType.Circle)
                     {
@@ -102,14 +102,14 @@ namespace PhysicsEngine.Physics
                         Vector3 position1 = new Vector3(circle1.Position.X, circle1.Position.Y, 0);
                         Vector3 position2 = new Vector3(circle2.Position.X, circle2.Position.Y, 0);
 
-                        areColliding = Collisions.Collision.Circle_VS_Circle(position1, circle1.Radius, position2, circle2.Radius, out normal, out depth);
+                        areColliding = Collisions.Collision.Circle_VS_Circle(position1, circle1.Radius, position2, circle2.Radius, ref normal, ref depth);
                     }
                     else
                     {
                         Quad polygon = (Quad)(body1.BodyType == BodyType.Quad ? body1.Shape : body2.Shape);
                         Circle circle = (Circle)(body1.BodyType == BodyType.Circle ? body1.Shape : body2.Shape);
 
-                        areColliding = Collisions.Collision.Circle_VS_Polygon(polygon.Vertices, new Vector3(circle.Position.X, circle.Position.Y, 0), circle.Radius, out normal, out depth);
+                        areColliding = Collisions.Collision.Circle_VS_Polygon(polygon.Vertices, new Vector3(circle.Position.X, circle.Position.Y, 0), circle.Radius, ref normal, ref depth);
                     }
 
                     if (!areColliding) continue;
@@ -129,10 +129,10 @@ namespace PhysicsEngine.Physics
         private static void SolveCollisions(Body body1, Body body2, Vector2 normal, double depth)
         {
             short contactPointsAmount = 0;
-            Vector3 contactPoint1;
-            Vector3 contactPoint2;
+            Vector3 contactPoint1 = Vector3.Zero;
+            Vector3 contactPoint2 = Vector3.Zero;
 
-            Collisions.Collision.GetContactCollisionPoints(body1, body2, out contactPointsAmount, out contactPoint1, out contactPoint2);
+            Collisions.Collision.GetContactCollisionPoints(body1, body2, ref contactPointsAmount, ref contactPoint1, ref contactPoint2);
 
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
             double p = minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
