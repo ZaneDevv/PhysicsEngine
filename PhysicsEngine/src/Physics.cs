@@ -10,7 +10,7 @@ namespace PhysicsEngine.Physics
     internal static class Physics
     {
         private readonly static Vector2 GRAVITY = new Vector2(0, 200);
-        private readonly static int ITERATIONS = 10;
+        private readonly static int ITERATIONS = 4;
 
         /// <summary>
         /// Updates physics for all the specified bodies
@@ -94,7 +94,7 @@ namespace PhysicsEngine.Physics
                         Quad polygon1 = (Quad)body1.Shape;
                         Quad polygon2 = (Quad)body2.Shape;
 
-                        areColliding = Collisions.Collision.Polygon_VS_Polygon(polygon1.Vertices, polygon2.Vertices, ref normal, ref depth);
+                        areColliding = Collisions.Collision.Polygon_VS_Polygon(polygon1, polygon2, ref normal, ref depth);
                     }
                     else if (body1.BodyType is BodyType.Circle && body2.BodyType is BodyType.Circle)
                     {
@@ -130,14 +130,8 @@ namespace PhysicsEngine.Physics
         /// <param name="depth">How much are the bodies overlaping</param>
         private static void SolveCollisions(Body body1, Body body2, Vector2 normal, double depth)
         {
-            short contactPointsAmount = 0;
-            Vector3 contactPoint1 = Vector3.Zero;
-            Vector3 contactPoint2 = Vector3.Zero;
-
-            Collisions.Collision.GetContactCollisionPoints(body1, body2, ref contactPointsAmount, ref contactPoint1, ref contactPoint2);
-
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
-            double p = -(1 + minRestitution) * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
+            double p = -minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
 
             if (body1.DoesPhysicsAffect)
             {
@@ -151,6 +145,12 @@ namespace PhysicsEngine.Physics
             }
         }
 
+        /// <summary>
+        /// Calculates the determinant of two vectors
+        /// </summary>
+        /// <param name="vector1">First vector</param>
+        /// <param name="vector2">Second vector</param>
+        /// <returns>The determinant of the vectors</returns>
         private static double Determinant(Vector2 vector1, Vector2 vector2) => vector1.X * vector2.Y - vector2.X * vector1.Y;
     }
 }

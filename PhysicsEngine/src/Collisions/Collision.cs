@@ -47,10 +47,13 @@ namespace PhysicsEngine.Collisions
         /// <param name="normal">The collisions' normal vector</param>
         /// <param name="depth">How much are the polygons overlaping</param>
         /// <returns>Returns if the two polygons are overlaping</returns>
-        internal static bool Polygon_VS_Polygon(Vector3[] vertices1, Vector3[] vertices2, ref Vector3 normal, ref double depth)
+        internal static bool Polygon_VS_Polygon(Quad quad1, Quad quad2, ref Vector3 normal, ref double depth)
         {
             normal = Vector3.Zero;
             depth = double.MaxValue;
+
+            Vector3[] vertices1 = quad1.Vertices;
+            Vector3[] vertices2 = quad2.Vertices;
 
             List<Vector3> axes = new List<Vector3>();
 
@@ -71,6 +74,11 @@ namespace PhysicsEngine.Collisions
                     depth = minDepth;
                     normal = axis;
                 }
+            }
+
+            if (normal.X * (quad2.Position.X - quad1.Position.X) + normal.Y * (quad2.Position.Y - quad1.Position.Y) < 0)
+            {
+                normal = -normal;
             }
 
             return true;
@@ -145,10 +153,10 @@ namespace PhysicsEngine.Collisions
             {
                 Vector3 currentVertex = vertices[index];
                 Vector3 nextVertex = vertices[(index + 1) % vertices.Length];
-                Vector3 edge = Vector3.Normalize(nextVertex - currentVertex);
+                Vector3 edge = nextVertex - currentVertex;
                 Vector3 axis = new Vector3(-edge.Y, edge.X, 0);
 
-                axesList.Add(axis);
+                axesList.Add(Vector3.Normalize(axis));
             }
         }
 
