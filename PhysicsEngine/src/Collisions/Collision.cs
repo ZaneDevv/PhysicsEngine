@@ -176,6 +176,14 @@ namespace PhysicsEngine.Collisions
             }
         }
 
+        /// <summary>
+        /// Calculates the contact points of the collision
+        /// </summary>
+        /// <param name="body1">First collided body</param>
+        /// <param name="body2">Second collided body</param>
+        /// <param name="pointsAmount">Contact points amount [1, 2]</param>
+        /// <param name="contactPoint1">First contact point</param>
+        /// <param name="contactPoint2">Possible second contact point</param>
         internal static void GetContactCollisionPoints(Body body1, Body body2, out short pointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2)
         {
             pointsAmount = 0;
