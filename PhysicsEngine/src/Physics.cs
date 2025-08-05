@@ -3,6 +3,7 @@ using PhysicsEngine.Render;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Runtime.Intrinsics;
 
 namespace PhysicsEngine.Physics
 {
@@ -148,5 +149,7 @@ namespace PhysicsEngine.Physics
                 body2.LinearVelocity -= normal * (float)(p / body2.Mass);
             }
         }
+
+        private static double Determinant(Vector2 vector1, Vector2 vector2) => vector1.X * vector2.Y - vector2.X * vector1.Y;
     }
 }

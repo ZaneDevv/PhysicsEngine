@@ -9,6 +9,7 @@ namespace PhysicsEngine.Bodies
 
         private double mass = 1;
         private double restitution = 1;
+        private double intertia = 1;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
@@ -41,6 +42,17 @@ namespace PhysicsEngine.Bodies
         internal BodyBuilder SetRestitution(double restitution)
         {
             this.restitution = restitution;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the intertia for the body
+        /// </summary>
+        /// <param name="intertia">Body's intertia</param>
+        /// <returns>The proper class</returns>
+        internal BodyBuilder SetIntertia(double intertia)
+        {
+            this.intertia = intertia;
             return this;
         }
 
@@ -115,7 +127,7 @@ namespace PhysicsEngine.Bodies
         /// </summary>
         /// <returns>The body created</returns>
         internal Body Build() => new Body(
-            this.mass, this.restitution,
+            this.mass, this.restitution, this.intertia,
             this.isCollideable, this.doesPhysicsAffect,
             this.bodyType, this.shape, this.position, this.rotation);
     }

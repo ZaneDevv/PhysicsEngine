@@ -234,9 +234,9 @@ namespace PhysicsEngine.Collisions
                         }
                     }
 
-                    GetContactPoints(quad1.Vertices, quad2.Vertices, ref pointsAmount, ref contactPoint1, ref contactPoint2);
-                    GetContactPoints(quad2.Vertices, quad1.Vertices, ref pointsAmount, ref contactPoint1, ref contactPoint2);
                 }
+                GetContactPoints(quad1.Vertices, quad2.Vertices, ref pointsAmount, ref contactPoint1, ref contactPoint2);
+                GetContactPoints(quad2.Vertices, quad1.Vertices, ref pointsAmount, ref contactPoint1, ref contactPoint2);
             }
             else
             {

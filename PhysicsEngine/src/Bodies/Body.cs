@@ -10,6 +10,7 @@ namespace PhysicsEngine.Bodies
 
         private double mass;
         private double restitution;
+        private double inertia;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
@@ -29,13 +30,14 @@ namespace PhysicsEngine.Bodies
 
 
         internal Body(
-                double mass, double restitution,
+                double mass, double restitution, double inertia,
                 bool isCollideable, bool doesPhysicsAffect,
                 BodyType bodyType, RenderShape shape, Vector2 position, double rotation
             )
         {
             this.mass = mass;
             this.restitution = restitution;
+            this.inertia = inertia;
 
             this.isCollideable = isCollideable;
             this.doesPhysicsAffect = doesPhysicsAffect;
@@ -117,6 +119,12 @@ namespace PhysicsEngine.Bodies
         {
             get => this.restitution;
             set => this.restitution = value;
+        }
+
+        internal double Inertia
+        {
+            get => this.inertia;
+            set => this.inertia = value;
         }
 
         internal BodyType BodyType
