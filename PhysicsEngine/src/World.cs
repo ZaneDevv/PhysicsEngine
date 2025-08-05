@@ -4,6 +4,8 @@ using PhysicsEngine.Bodies;
 using PhysicsEngine.Render;
 using PhysicsEngine.Physics;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace PhysicsEngine
 {
@@ -15,6 +17,11 @@ namespace PhysicsEngine
         private SpriteBatch spriteBatch;
 
         private List<Body> ShapeList = new List<Body>();
+
+        private bool wasLeftClickPressedLastFrame = false;
+        private bool wasRightClickPressedLastFrame = false;
+
+        private Random random = new Random();
 
 
         internal World()
@@ -53,25 +60,6 @@ namespace PhysicsEngine
                 .SetRotation(MathHelper.Pi / 6)
                 .SetPhysics(false)
                 .Build());
-
-            this.ShapeList.Add(new BodyBuilder()
-                .SetBodyType(BodyType.Quad)
-                .SetShape(new Quad(20, 20, 0, Color.White, this))
-                .SetPosition(new Vector2(200, 200))
-                .Build());
-
-            this.ShapeList.Add(new BodyBuilder()
-                .SetBodyType(BodyType.Circle)
-                .SetShape(new Circle(30, 0, Color.Beige, this, 50))
-                .SetMass(40)
-                .SetPosition(new Vector2(700, 400))
-                .Build());
-
-            this.ShapeList.Add(new BodyBuilder()
-                .SetBodyType(BodyType.Circle)
-                .SetShape(new Circle(15, 0, Color.Red, this, 50))
-                .SetPosition(new Vector2(200, 100))
-                .Build());
         }
 
 
@@ -79,6 +67,46 @@ namespace PhysicsEngine
         {
             double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
             Physics.Physics.UpdatePhysics(ref this.ShapeList, deltaTime, this.graphics);
+
+            Point mouse = Mouse.GetState().Position;
+
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                wasLeftClickPressedLastFrame = true;
+            }
+            else if (wasLeftClickPressedLastFrame)
+            {
+                wasLeftClickPressedLastFrame = false;
+
+                int sizeX = (int)(random.NextDouble() * 30 + 10);
+                int sizeY = (int)(random.NextDouble() * 30 + 10);
+
+                this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Quad)
+                .SetShape(new Quad(sizeX, sizeY, 0, this.GetRandomColor(), this))
+                .SetPosition(new Vector2(mouse.X, mouse.Y))
+                .SetMass((sizeX + sizeY) / 2)
+                .Build());
+            }
+
+            if (Mouse.GetState().RightButton == ButtonState.Pressed)
+            {
+                wasRightClickPressedLastFrame = true;
+            }
+            else if (wasRightClickPressedLastFrame)
+            {
+                wasRightClickPressedLastFrame = false;
+
+                float radius = (float)random.NextDouble() * 30 + 10;
+
+                this.ShapeList.Add(new BodyBuilder()
+                .SetBodyType(BodyType.Circle)
+                .SetShape(new Circle(radius, 0, this.GetRandomColor(), this, 50))
+                .SetPosition(new Vector2(mouse.X, mouse.Y))
+                .SetMass(radius / 2)
+                .SetRestitution(2)
+                .Build());
+            }
 
             base.Update(gameTime);
         }
@@ -100,5 +128,7 @@ namespace PhysicsEngine
             base.Draw(gameTime);
         }
     
+        
+        private Color GetRandomColor() => new Color((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble());
     }
 }

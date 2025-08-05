@@ -8,7 +8,7 @@ namespace PhysicsEngine.Collisions
 {
     internal struct Collision
     {
-        private static readonly double Epsilon = 0.005;
+        private static readonly double Epsilon = 0.0005;
 
         /// <summary>
         /// Checks and gives information about the possible collision betwee two circles
@@ -183,10 +183,6 @@ namespace PhysicsEngine.Collisions
         /// <param name="contactPoint2">Possible second contact point</param>
         internal static void GetContactCollisionPoints(Body body1, Body body2, ref short pointsAmount, ref Vector3 contactPoint1, ref Vector3 contactPoint2)
         {
-            pointsAmount = 0;
-            contactPoint1 = Vector3.Zero;
-            contactPoint2 = Vector3.Zero;
-
             if (body1.BodyType is BodyType.Circle && body2.BodyType is BodyType.Circle)
             {
                 Circle circle1 = (Circle)body1.Shape;
@@ -219,10 +215,10 @@ namespace PhysicsEngine.Collisions
 
                             double squaredDistance = Collision.SquaredDistancePointSegment(vertex1, vertex2, nextVertex2, out Vector3 pointInLine);
 
-                            if (Collision.AreNumberClose(squaredDistance, minimumDistance))
+                            if (Collision.AreNumbersClose(squaredDistance, minimumDistance))
                             {
-                                bool arePointsCloseInX = Collision.AreNumberClose(contactPoint1.X, pointInLine.X);
-                                bool arePointsCloseInY = Collision.AreNumberClose(contactPoint1.Y, pointInLine.Y);
+                                bool arePointsCloseInX = Collision.AreNumbersClose(contactPoint1.X, pointInLine.X);
+                                bool arePointsCloseInY = Collision.AreNumbersClose(contactPoint1.Y, pointInLine.Y);
 
                                 if (arePointsCloseInX && arePointsCloseInY) continue;
 
@@ -294,6 +290,6 @@ namespace PhysicsEngine.Collisions
         /// <param name="x">First number to compare</param>
         /// <param name="y">Second number to compare</param>
         /// <returns>Returns if the numbers are close to each other</returns>
-        private static bool AreNumberClose(double x, double y) => Math.Abs(x - y) <= Collision.Epsilon;
+        private static bool AreNumbersClose(double x, double y) => Math.Abs(x - y) <= Collision.Epsilon;
     }
 }
