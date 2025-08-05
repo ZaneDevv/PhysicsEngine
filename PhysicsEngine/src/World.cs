@@ -62,13 +62,14 @@ namespace PhysicsEngine
 
             this.ShapeList.Add(new BodyBuilder()
                 .SetBodyType(BodyType.Circle)
-                .SetShape(new Circle(20, 0, Color.Red, this, 50))
+                .SetShape(new Circle(30, 0, Color.Beige, this, 50))
+                .SetMass(500)
                 .SetPosition(new Vector2(700, 400))
                 .Build());
 
             this.ShapeList.Add(new BodyBuilder()
                 .SetBodyType(BodyType.Circle)
-                .SetShape(new Circle(20, 0, Color.Red, this, 50))
+                .SetShape(new Circle(15, 0, Color.Red, this, 50))
                 .SetPosition(new Vector2(200, 100))
                 .Build());
         }
