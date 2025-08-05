@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using PhysicsEngine.Bodies;
+using PhysicsEngine.Render;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace PhysicsEngine.Collisions
@@ -113,9 +115,10 @@ namespace PhysicsEngine.Collisions
                 double min1, max1;
                 double min2, max2;
 
-                Vector3[] circlePseudovertices = new Vector3[2];
-                circlePseudovertices[0] = new Vector3(circlePosition.X, circlePosition.Y, 0) - axis * (float)circleRadius;
-                circlePseudovertices[1] = new Vector3(circlePosition.X, circlePosition.Y, 0) + axis * (float)circleRadius;
+                Vector3[] circlePseudovertices = new Vector3[] {
+                    new Vector3(circlePosition.X, circlePosition.Y, 0) - axis * (float)circleRadius,
+                    new Vector3(circlePosition.X, circlePosition.Y, 0) + axis * (float)circleRadius
+                };
 
                 VerticesProjectionOntoAxis(axis, polygonVertices, out min1, out max1);
                 VerticesProjectionOntoAxis(axis, circlePseudovertices, out min2, out max2);
@@ -170,6 +173,41 @@ namespace PhysicsEngine.Collisions
 
                 if (min > projection) min = projection;
                 if (max < projection) max = projection;
+            }
+        }
+
+        internal static void GetContactCollisionPoints(Body body1, Body body2, out short pointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2)
+        {
+            pointsAmount = 0;
+            contactPoint1 = Vector3.Zero;
+            contactPoint2 = Vector3.Zero;
+
+            if (body1.BodyType is BodyType.Circle && body2.BodyType is BodyType.Circle)
+            {
+                Circle circle1 = (Circle)body1.Shape;
+                Circle circle2 = (Circle)body2.Shape;
+
+                Vector3 position = new Vector3(circle1.Position.X, circle2.Position.Y, 0);
+                Vector3 direction = new Vector3(body2.Position.X - body1.Position.X, body2.Position.Y - body1.Position.Y, 0);
+                direction = Vector3.Normalize(direction);
+
+                pointsAmount = 1;
+                contactPoint1 = position +  direction * (float)circle1.Radius;
+            }
+            else if (body1.BodyType is BodyType.Quad && body2.BodyType is BodyType.Quad)
+            {
+                Quad quad1 = (Quad)body1.Shape;
+                Quad quad2 = (Quad)body2.Shape;
+
+                Vector3[] vertices1 = quad1.Vertices;
+                Vector3[] vertices2 = quad2.Vertices;
+            }
+            else
+            {
+                Quad quad = (Quad)(body1.BodyType is BodyType.Quad ? body1.Shape : body2.Shape);
+                Circle circle = (Circle)(body1.BodyType is BodyType.Circle ? body1.Shape : body2.Shape);
+
+                Vector3[] vertices = quad.Vertices;
             }
         }
     }

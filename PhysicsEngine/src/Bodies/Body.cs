@@ -22,6 +22,7 @@ namespace PhysicsEngine.Bodies
         private Vector2 position;
 
         private double angularVelocity;
+        private double rotationalIntertia;
         private double rotation;
 
         #endregion
@@ -52,6 +53,7 @@ namespace PhysicsEngine.Bodies
             this.linearVelocity = Vector2.Zero;
 
             this.angularVelocity = 0;
+            this.rotationalIntertia = this.GetRotationalInertia();
         }
 
         /// <summary>
@@ -72,9 +74,22 @@ namespace PhysicsEngine.Bodies
         /// Applies a force to the body
         /// </summary>
         /// <param name="force">Force applied</param>
-        internal void ApplyForce(Vector2 force)
+        internal void ApplyForce(Vector2 force) => this.force += force;
+
+        /// <summary>
+        /// Calculates the rotational intertia according to the size and mass of the body
+        /// </summary>
+        /// <returns>Rotational inertia of the body</returns>
+        private double GetRotationalInertia()
         {
-            this.force += force;
+            if (this.bodyType == BodyType.Circle)
+            {
+                Circle circle = (Circle)this.shape;
+                return this.mass * circle.Radius * circle.Radius / 2;
+            }
+
+            Quad quad = (Quad)this.shape;
+            return this.mass * (quad.Size.X * quad.Size.X + quad.Size.Y * quad.Size.Y) / 2;
         }
 
 
