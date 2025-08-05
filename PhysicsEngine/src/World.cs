@@ -85,8 +85,8 @@ namespace PhysicsEngine
             {
                 wasLeftClickPressedLastFrame = false;
 
-                int sizeX = (int)(random.NextDouble() * 30 + 10);
-                int sizeY = (int)(random.NextDouble() * 30 + 10);
+                int sizeX = (int)(random.NextDouble() * 10 + 40);
+                int sizeY = (int)(random.NextDouble() * 10 + 40);
 
                 this.ShapeList.Add(new BodyBuilder()
                 .SetBodyType(BodyType.Quad)
@@ -104,14 +104,14 @@ namespace PhysicsEngine
             {
                 wasRightClickPressedLastFrame = false;
 
-                float radius = (float)random.NextDouble() * 30 + 10;
+                float radius = (float)random.NextDouble() * 10 + 40;
 
                 this.ShapeList.Add(new BodyBuilder()
                 .SetBodyType(BodyType.Circle)
                 .SetShape(new Circle(radius, 0, this.GetRandomColor(), this, 50))
                 .SetPosition(new Vector2(mouse.X, mouse.Y))
                 .SetMass(radius / 2)
-                .SetRestitution(2)
+                .SetRestitution(1.1)
                 .Build());
             }
 

@@ -34,7 +34,7 @@ namespace PhysicsEngine.Collisions
             }
 
             depth = radiusAddition - distance;
-            normal = Vector3.Normalize(center1 - center2);
+            normal = Vector3.Normalize(center2 - center1);
 
             return true;
         }

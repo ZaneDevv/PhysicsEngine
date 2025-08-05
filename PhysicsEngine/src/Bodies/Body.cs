@@ -64,6 +64,8 @@ namespace PhysicsEngine.Bodies
         /// <param name="deltaTime">Time passed by since the last frame</param>
         internal void Update(double deltaTime)
         {
+            if (!this.doesPhysicsAffect) return;
+
             this.linearVelocity += this.force * (float)(deltaTime / this.mass);
 
             this.Rotation += this.angularVelocity * (float)deltaTime;

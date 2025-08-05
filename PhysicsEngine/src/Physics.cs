@@ -9,7 +9,8 @@ namespace PhysicsEngine.Physics
 {
     internal static class Physics
     {
-        private readonly static Vector2 GRAVITY = new Vector2(0, 100);
+        private readonly static Vector2 GRAVITY = new Vector2(0, 200);
+        private readonly static int ITERATIONS = 10;
 
         /// <summary>
         /// Updates physics for all the specified bodies
@@ -47,9 +48,9 @@ namespace PhysicsEngine.Physics
             }
 
             // Solve collisions
-            for (int index = 0; index < 5; index++)
+            for (int index = 0; index < ITERATIONS; index++)
             {
-                Physics.DoCollisions(ref bodies);
+                Physics.DoCollisions(bodies);
             }
         }
 
@@ -68,7 +69,7 @@ namespace PhysicsEngine.Physics
         /// Checks and solves the collisions
         /// </summary>
         /// <param name="bodies">Bodies to check collisions</param>
-        private static void DoCollisions(ref List<Body> bodies)
+        private static void DoCollisions(List<Body> bodies)
         {
             for (int i = 0; i < bodies.Count; i++)
             {
@@ -136,17 +137,17 @@ namespace PhysicsEngine.Physics
             Collisions.Collision.GetContactCollisionPoints(body1, body2, ref contactPointsAmount, ref contactPoint1, ref contactPoint2);
 
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
-            double p = minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
+            double p = -(1 + minRestitution) * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
 
             if (body1.DoesPhysicsAffect)
             {
-                body1.Position += normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
-                body1.LinearVelocity += normal * (float)(p / body1.Mass);
+                body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+                body1.LinearVelocity -= normal * (float)(p / body1.Mass);
             }
             if (body2.DoesPhysicsAffect)
             {
-                body2.Position -= normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
-                body2.LinearVelocity -= normal * (float)(p / body2.Mass);
+                body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+                body2.LinearVelocity += normal * (float)(p / body2.Mass);
             }
         }
 
