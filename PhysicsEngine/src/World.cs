@@ -31,7 +31,9 @@ namespace PhysicsEngine
             this.IsMouseVisible = true;
         }
 
-
+        /// <summary>
+        /// Initializes the simulation
+        /// </summary>
         protected override void Initialize()
         {
             this.graphics.PreferredBackBufferWidth = 1280;
@@ -41,7 +43,9 @@ namespace PhysicsEngine
             base.Initialize();
         }
 
-
+        /// <summary>
+        /// Loads all bodies data
+        /// </summary>
         protected override void LoadContent()
         {
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -62,7 +66,10 @@ namespace PhysicsEngine
                 .Build());
         }
 
-
+        /// <summary>
+        /// Updates the whole game
+        /// </summary>
+        /// <param name="gameTime">Time data</param>
         protected override void Update(GameTime gameTime)
         {
             double deltaTime = gameTime.ElapsedGameTime.TotalSeconds;
@@ -112,6 +119,10 @@ namespace PhysicsEngine
         }
 
 
+        /// <summary>
+        /// Renders all the bodies in the screen
+        /// </summary>
+        /// <param name="gameTime">Time data</param>
         protected override void Draw(GameTime gameTime)
         {
             this.GraphicsDevice.Clear(BACKGROUND_COLOR);
@@ -128,7 +139,10 @@ namespace PhysicsEngine
             base.Draw(gameTime);
         }
     
-        
+        /// <summary>
+        /// Computes a random color
+        /// </summary>
+        /// <returns>Obtained color</returns>
         private Color GetRandomColor() => new Color((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble());
     }
 }
