@@ -196,7 +196,7 @@ namespace PhysicsEngine.Collisions
                 Circle circle1 = (Circle)body1.Shape;
                 Circle circle2 = (Circle)body2.Shape;
 
-                Vector3 position = new Vector3(circle1.Position.X, circle2.Position.Y, 0);
+                Vector3 position = new Vector3(circle1.Position.X, circle1.Position.Y, 0);
                 Vector3 direction = new Vector3(body2.Position.X - body1.Position.X, body2.Position.Y - body1.Position.Y, 0);
                 direction = Vector3.Normalize(direction);
 
@@ -253,7 +253,7 @@ namespace PhysicsEngine.Collisions
                 Quad quad = (Quad)(body1.BodyType is BodyType.Quad ? body1.Shape : body2.Shape);
                 Circle circle = (Circle)(body1.BodyType is BodyType.Circle ? body1.Shape : body2.Shape);
 
-                Vector3 circlePosiiton = new Vector3(circle.Position.X, circle.Position.Y, 0);
+                Vector3 circlePosition = new Vector3(circle.Position.X, circle.Position.Y, 0);
 
                 double closestSuqaredDistance = double.MaxValue;
 
@@ -262,7 +262,7 @@ namespace PhysicsEngine.Collisions
                     Vector3 vertex = quad.Vertices[i];
                     Vector3 nextVertex = quad.Vertices[(i + 1) % quad.Vertices.Length];
 
-                    double squaredDistance = Collision.SquaredDistancePointSegment(circlePosiiton, vertex, nextVertex, out Vector3 pointInLine);
+                    double squaredDistance = Collision.SquaredDistancePointSegment(circlePosition, vertex, nextVertex, out Vector3 pointInLine);
 
                     if (squaredDistance < closestSuqaredDistance)
                     {
