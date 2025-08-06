@@ -183,6 +183,18 @@ namespace PhysicsEngine.Bodies
             set => this.rotationalIntertia = value;
         }
 
+        internal double StaticFriction
+        {
+            get => this.staticFriction;
+            set => this.staticFriction = value;
+        }
+
+        internal double DynamicFriction
+        {
+            get => this.dynamicFriction;
+            set => this.dynamicFriction = value;
+        }
+
         #endregion
     }
 }

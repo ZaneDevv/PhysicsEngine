@@ -3,7 +3,6 @@ using PhysicsEngine.Render;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using System.Reflection;
 
 namespace PhysicsEngine.Physics
 {
@@ -12,10 +11,14 @@ namespace PhysicsEngine.Physics
         private readonly static Vector2 GRAVITY = new Vector2(0, 200);
         private readonly static int ITERATIONS = 4;
 
+        private readonly static double EPSILON = 0.0005;
+
         private readonly static Vector2[] contactPoints = new Vector2[2];
         private readonly static Vector2[] impulses = new Vector2[2];
+        private readonly static Vector2[] frictionImpulses = new Vector2[2];
         private readonly static Vector2[] raList = new Vector2[2];
         private readonly static Vector2[] rbList = new Vector2[2];
+        private readonly static double[] impulseMagnitudes = new double[2];
 
         /// <summary>
         /// Updates physics for all the specified bodies
@@ -174,7 +177,10 @@ namespace PhysicsEngine.Physics
                     (raPerpendicularDotNormal * raPerpendicularDotNormal) / body1.RotationalIntertia +
                     (rbPerpendicularDotNormal * rbPerpendicularDotNormal) / body2.RotationalIntertia;
 
-                Physics.impulses[index] = (float)(nominator / denominator) * normal;
+                double impulseMagnitude = nominator / denominator / contactPointsAmount;
+
+                Physics.impulseMagnitudes[index] = impulseMagnitude;
+                Physics.impulses[index] = (float)impulseMagnitude * normal;
                 Physics.raList[index] = ra;
                 Physics.rbList[index] = rb;
             }
@@ -190,6 +196,59 @@ namespace PhysicsEngine.Physics
                 {
                     body2.AngularVelocity += Physics.Determinant(Physics.rbList[index], Physics.impulses[index]) / body2.RotationalIntertia;
                     body2.LinearVelocity += Physics.impulses[index] / (float)body2.Mass;
+                }
+            }
+
+            for (byte index = 0; index < contactPointsAmount; index++)
+            {
+                double staticFriction = (body1.StaticFriction + body2.StaticFriction) / 2;
+                double dynamicFriction = (body1.DynamicFriction + body2.DynamicFriction) / 2;
+
+                Vector2 ra = Physics.contactPoints[index] - body1.Position;
+                Vector2 rb = Physics.contactPoints[index] - body2.Position;
+
+                Vector2 raPerpendicular = new Vector2(-ra.Y, ra.X);
+                Vector2 rbPerpendicular = new Vector2(-rb.Y, rb.X);
+
+                Vector2 angularVelocityDirection1 = raPerpendicular * (float)body1.AngularVelocity;
+                Vector2 angularVelocityDirection2 = rbPerpendicular * (float)body2.AngularVelocity;
+
+                Vector2 relativeVelocity = body2.LinearVelocity + angularVelocityDirection2 - body1.LinearVelocity - angularVelocityDirection1;
+
+                Vector2 tangent = relativeVelocity - Vector2.Dot(relativeVelocity, normal) * normal;
+                if (tangent.LengthSquared() <= Physics.EPSILON * Physics.EPSILON) continue;
+
+                tangent = Vector2.Normalize(tangent);
+
+                double contactVelocityMagnitude = Vector2.Dot(tangent, relativeVelocity);
+
+                double raPerpendicularDotTangent = Vector2.Dot(raPerpendicular, tangent);
+                double rbPerpendicularDotTangent = Vector2.Dot(rbPerpendicular, tangent);
+
+                double denominator = 1 / body1.Mass + 1 / body2.Mass +
+                    (raPerpendicularDotTangent * raPerpendicularDotTangent) / body1.RotationalIntertia +
+                    (rbPerpendicularDotTangent * rbPerpendicularDotTangent) / body2.RotationalIntertia;
+
+                double frictionMagnitude = -contactVelocityMagnitude / denominator / contactPointsAmount;
+
+                Vector2 frictionImpulse = Math.Abs(frictionMagnitude) <= Physics.impulseMagnitudes[index] ?
+                    frictionImpulse = (float)frictionMagnitude * tangent :
+                    (float)(Physics.impulseMagnitudes[index] * dynamicFriction) * tangent;
+
+                Physics.frictionImpulses[index] = frictionImpulse;
+            }
+
+            for (byte index = 0; index < contactPointsAmount; index++)
+            {
+                if (body1.DoesPhysicsAffect)
+                {
+                    body1.AngularVelocity -= Physics.Determinant(Physics.raList[index], Physics.frictionImpulses[index]) / body1.RotationalIntertia;
+                    body1.LinearVelocity -= Physics.frictionImpulses[index] / (float)body1.Mass;
+                }
+                if (body2.DoesPhysicsAffect)
+                {
+                    body2.AngularVelocity += Physics.Determinant(Physics.rbList[index], Physics.frictionImpulses[index]) / body2.RotationalIntertia;
+                    body2.LinearVelocity += Physics.frictionImpulses[index] / (float)body2.Mass;
                 }
             }
 

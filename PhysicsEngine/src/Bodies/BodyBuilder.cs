@@ -66,6 +66,12 @@ namespace PhysicsEngine.Bodies
         internal BodyBuilder SetDynamicFriction(double dynamicFriction)
         {
             this.dynamicFriction = dynamicFriction;
+
+            if (this.dynamicFriction > this.staticFriction)
+            {
+                this.staticFriction = this.dynamicFriction - 0.1;
+            }
+
             return this;
         }
 
@@ -77,6 +83,12 @@ namespace PhysicsEngine.Bodies
         internal BodyBuilder SetStaticFriction(double staticFriction)
         {
             this.staticFriction = staticFriction;
+
+            if (this.dynamicFriction > this.staticFriction)
+            {
+                this.dynamicFriction = this.staticFriction + 0.1;
+            }
+
             return this;
         }
 
