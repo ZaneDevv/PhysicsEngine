@@ -1,6 +1,5 @@
 ﻿using PhysicsEngine.Render;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace PhysicsEngine.Bodies
 {
@@ -31,6 +30,20 @@ namespace PhysicsEngine.Bodies
         #endregion
 
 
+        /// <summary>
+        /// Creates a brand new body with all the parameters set
+        /// </summary>
+        /// <param name="mass">Body's mass</param>
+        /// <param name="restitution">Body's restitution</param>
+        /// <param name="inertia">Body's inertia</param>
+        /// <param name="staticFriction">Body's static friction</param>
+        /// <param name="dynamicFriction">Body's  dynamic friction</param>
+        /// <param name="isCollideable">If the body is collideable</param>
+        /// <param name="doesPhysicsAffect">If the body is affected by physics</param>
+        /// <param name="bodyType">Body type (quad/circle)</param>
+        /// <param name="shape">Render</param>
+        /// <param name="position">Body's position</param>
+        /// <param name="rotation">Body's rotation</param>
         internal Body(
                 double mass, double restitution, double inertia, double staticFriction, double dynamicFriction,
                 bool isCollideable, bool doesPhysicsAffect,

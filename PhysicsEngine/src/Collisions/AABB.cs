@@ -5,6 +5,13 @@
         double minX, maxX;
         double minY, maxY;
 
+        /// <summary>
+        /// Creates a new AABB
+        /// </summary>
+        /// <param name="minX">Minimum value in X axis</param>
+        /// <param name="maxX">Maximum value in X axis</param>
+        /// <param name="minY">Minimum value in Y axis</param>
+        /// <param name="maxY">Maximum value in Y axis</param>
         internal AABB(double minX, double maxX, double minY, double maxY)
         {
             this.minX = minX;

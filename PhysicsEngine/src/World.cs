@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsEngine.Bodies;
 using PhysicsEngine.Render;
-using PhysicsEngine.Physics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -24,6 +23,9 @@ namespace PhysicsEngine
         private Random random = new Random();
 
 
+        /// <summary>
+        /// Creates a brand new game
+        /// </summary>
         internal World()
         {
             this.graphics = new GraphicsDeviceManager(this);
