@@ -11,6 +11,8 @@ namespace PhysicsEngine.Bodies
         private double mass;
         private double restitution;
         private double inertia;
+        private double staticFriction;
+        private double dynamicFriction;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
@@ -30,7 +32,7 @@ namespace PhysicsEngine.Bodies
 
 
         internal Body(
-                double mass, double restitution, double inertia,
+                double mass, double restitution, double inertia, double staticFriction, double dynamicFriction,
                 bool isCollideable, bool doesPhysicsAffect,
                 BodyType bodyType, RenderShape shape, Vector2 position, double rotation
             )
@@ -38,6 +40,8 @@ namespace PhysicsEngine.Bodies
             this.mass = mass;
             this.restitution = restitution;
             this.inertia = inertia;
+            this.staticFriction = staticFriction;
+            this.dynamicFriction = dynamicFriction;
 
             this.isCollideable = isCollideable;
             this.doesPhysicsAffect = doesPhysicsAffect;
@@ -171,6 +175,12 @@ namespace PhysicsEngine.Bodies
                 this.rotation = value;
                 this.shape.Rotation = this.rotation;
             }
+        }
+
+        internal double RotationalIntertia
+        {
+            get => this.rotationalIntertia;
+            set => this.rotationalIntertia = value;
         }
 
         #endregion

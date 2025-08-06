@@ -12,6 +12,11 @@ namespace PhysicsEngine.Physics
         private readonly static Vector2 GRAVITY = new Vector2(0, 200);
         private readonly static int ITERATIONS = 4;
 
+        private readonly static Vector2[] contactPoints = new Vector2[2];
+        private readonly static Vector2[] impulses = new Vector2[2];
+        private readonly static Vector2[] raList = new Vector2[2];
+        private readonly static Vector2[] rbList = new Vector2[2];
+
         /// <summary>
         /// Updates physics for all the specified bodies
         /// </summary>
@@ -143,15 +148,13 @@ namespace PhysicsEngine.Physics
 
             PhysicsEngine.Collisions.Collision.GetContactCollisionPoints(body1, body2, out short contactPointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2);
 
-            Vector2[] contactPoints = new Vector2[] { new Vector2(contactPoint1.X, contactPoint1.Y), new Vector2(contactPoint2.X, contactPoint2.Y) };
-            Vector2[] impulses = new Vector2[2];
-            Vector2[] raList = new Vector2[2];
-            Vector2[] rbList = new Vector2[2];
+            Physics.contactPoints[0] = new Vector2(contactPoint1.X, contactPoint1.Y);
+            Physics.contactPoints[1] = new Vector2(contactPoint2.X, contactPoint2.Y);
 
             for (byte index = 0; index < contactPointsAmount; index++)
             {
-                Vector2 ra = contactPoints[index] - body1.Position;
-                Vector2 rb = contactPoints[index] - body2.Position;
+                Vector2 ra = Physics.contactPoints[index] - body1.Position;
+                Vector2 rb = Physics.contactPoints[index] - body2.Position;
 
                 Vector2 raPerpendicular = new Vector2(-ra.Y, ra.X);
                 Vector2 rbPerpendicular = new Vector2(-rb.Y, rb.X);
@@ -166,27 +169,27 @@ namespace PhysicsEngine.Physics
                 double raPerpendicularDotNormal = Vector2.Dot(raPerpendicular, normal);
                 double rbPerpendicularDotNormal = Vector2.Dot(rbPerpendicular, normal);
 
-                double nominator = -(1 + minRestitution) * contactVelocityMagnitude; ;
+                double nominator = -(1 + minRestitution) * contactVelocityMagnitude;
                 double denominator = 1 / body1.Mass + 1 / body2.Mass +
-                    (raPerpendicularDotNormal * raPerpendicularDotNormal) / body1.Inertia +
-                    (rbPerpendicularDotNormal * rbPerpendicularDotNormal) / body2.Inertia;
+                    (raPerpendicularDotNormal * raPerpendicularDotNormal) / body1.RotationalIntertia +
+                    (rbPerpendicularDotNormal * rbPerpendicularDotNormal) / body2.RotationalIntertia;
 
-                impulses[index] = (float)(nominator / denominator) * normal;
-                raList[index] = ra;
-                rbList[index] = rb;
+                Physics.impulses[index] = (float)(nominator / denominator) * normal;
+                Physics.raList[index] = ra;
+                Physics.rbList[index] = rb;
             }
 
             for (byte index = 0; index < contactPointsAmount; index++)
             {
                 if (body1.DoesPhysicsAffect)
                 {
-                    body1.AngularVelocity -= Physics.Determinant(raList[index], impulses[index]) / body1.Inertia;
-                    body1.LinearVelocity -= impulses[index] / (float)body1.Mass;
+                    body1.AngularVelocity -= Physics.Determinant(Physics.raList[index], Physics.impulses[index]) / body1.RotationalIntertia;
+                    body1.LinearVelocity -= Physics.impulses[index] / (float)body1.Mass;
                 }
                 if (body2.DoesPhysicsAffect)
                 {
-                    body2.AngularVelocity += Physics.Determinant(rbList[index], impulses[index]) / body2.Inertia;
-                    body2.LinearVelocity += impulses[index] / (float)body2.Mass;
+                    body2.AngularVelocity += Physics.Determinant(Physics.rbList[index], Physics.impulses[index]) / body2.RotationalIntertia;
+                    body2.LinearVelocity += Physics.impulses[index] / (float)body2.Mass;
                 }
             }
 

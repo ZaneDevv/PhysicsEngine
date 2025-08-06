@@ -9,7 +9,9 @@ namespace PhysicsEngine.Bodies
 
         private double mass = 1;
         private double restitution = 0.6;
-        private double intertia = 400;
+        private double intertia = 1000;
+        private double staticFriction = 0.6;
+        private double dynamicFriction = 0.4;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
@@ -53,6 +55,28 @@ namespace PhysicsEngine.Bodies
         internal BodyBuilder SetIntertia(double intertia)
         {
             this.intertia = intertia;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the dynamic friction for the body
+        /// </summary>
+        /// <param name="dynamicFriction">Body's dynamic friction</param>
+        /// <returns>The proper class</returns>
+        internal BodyBuilder SetDynamicFriction(double dynamicFriction)
+        {
+            this.dynamicFriction = dynamicFriction;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the static friction for the body
+        /// </summary>
+        /// <param name="staticFriction">Body's static friction</param>
+        /// <returns>The proper class</returns>
+        internal BodyBuilder SetStaticFriction(double staticFriction)
+        {
+            this.staticFriction = staticFriction;
             return this;
         }
 
@@ -127,7 +151,7 @@ namespace PhysicsEngine.Bodies
         /// </summary>
         /// <returns>The body created</returns>
         internal Body Build() => new Body(
-            this.mass, this.restitution, this.intertia,
+            this.mass, this.restitution, this.intertia, this.staticFriction, this.dynamicFriction,
             this.isCollideable, this.doesPhysicsAffect,
             this.bodyType, this.shape, this.position, this.rotation);
     }
