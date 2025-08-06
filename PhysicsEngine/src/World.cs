@@ -93,6 +93,7 @@ namespace PhysicsEngine
                 .SetShape(new Quad(sizeX, sizeY, 0, this.GetRandomColor(), this))
                 .SetPosition(new Vector2(mouse.X, mouse.Y))
                 .SetMass((sizeX + sizeY) / 2)
+                .SetRestitution(0.3)
                 .Build());
             }
 
@@ -111,7 +112,6 @@ namespace PhysicsEngine
                 .SetShape(new Circle(radius, 0, this.GetRandomColor(), this, 50))
                 .SetPosition(new Vector2(mouse.X, mouse.Y))
                 .SetMass(radius / 2)
-                .SetRestitution(1.1)
                 .Build());
             }
 

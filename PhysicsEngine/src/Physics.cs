@@ -3,6 +3,7 @@ using PhysicsEngine.Render;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Reflection;
 
 namespace PhysicsEngine.Physics
 {
@@ -129,6 +130,15 @@ namespace PhysicsEngine.Physics
         /// <param name="depth">How much are the bodies overlaping</param>
         private static void SolveCollisions(Body body1, Body body2, Vector2 normal, double depth)
         {
+            if (body1.DoesPhysicsAffect)
+            {
+                body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+            }
+            if (body2.DoesPhysicsAffect)
+            {
+                body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+            }
+
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
 
             PhysicsEngine.Collisions.Collision.GetContactCollisionPoints(body1, body2, out short contactPointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2);
@@ -156,7 +166,7 @@ namespace PhysicsEngine.Physics
                 double raPerpendicularDotNormal = Vector2.Dot(raPerpendicular, normal);
                 double rbPerpendicularDotNormal = Vector2.Dot(rbPerpendicular, normal);
 
-                double nominator = -minRestitution * contactVelocityMagnitude;
+                double nominator = -(1 + minRestitution) * contactVelocityMagnitude; ;
                 double denominator = 1 / body1.Mass + 1 / body2.Mass +
                     (raPerpendicularDotNormal * raPerpendicularDotNormal) / body1.Inertia +
                     (rbPerpendicularDotNormal * rbPerpendicularDotNormal) / body2.Inertia;
@@ -170,14 +180,12 @@ namespace PhysicsEngine.Physics
             {
                 if (body1.DoesPhysicsAffect)
                 {
-                    body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
-                    body1.AngularVelocity = -Physics.Determinant(normal, raList[index]) / body1.Inertia;
+                    body1.AngularVelocity -= Physics.Determinant(raList[index], impulses[index]) / body1.Inertia;
                     body1.LinearVelocity -= impulses[index] / (float)body1.Mass;
                 }
                 if (body2.DoesPhysicsAffect)
                 {
-                    body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
-                    body2.AngularVelocity = Physics.Determinant(normal, rbList[index]) / body2.Inertia;
+                    body2.AngularVelocity += Physics.Determinant(rbList[index], impulses[index]) / body2.Inertia;
                     body2.LinearVelocity += impulses[index] / (float)body2.Mass;
                 }
             }

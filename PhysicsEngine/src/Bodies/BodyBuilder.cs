@@ -8,8 +8,8 @@ namespace PhysicsEngine.Bodies
         #region ATTRIBUTES
 
         private double mass = 1;
-        private double restitution = 1;
-        private double intertia = -5;
+        private double restitution = 0.6;
+        private double intertia = 400;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;
