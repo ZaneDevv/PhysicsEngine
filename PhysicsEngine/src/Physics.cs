@@ -204,8 +204,8 @@ namespace PhysicsEngine.Physics
                 double staticFriction = (body1.StaticFriction + body2.StaticFriction) / 2;
                 double dynamicFriction = (body1.DynamicFriction + body2.DynamicFriction) / 2;
 
-                Vector2 ra = Physics.contactPoints[index] - body1.Position;
-                Vector2 rb = Physics.contactPoints[index] - body2.Position;
+                Vector2 ra = Physics.raList[index];
+                Vector2 rb = Physics.rbList[index];
 
                 Vector2 raPerpendicular = new Vector2(-ra.Y, ra.X);
                 Vector2 rbPerpendicular = new Vector2(-rb.Y, rb.X);

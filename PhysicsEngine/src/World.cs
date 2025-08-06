@@ -140,11 +140,11 @@ namespace PhysicsEngine
 
             base.Draw(gameTime);
         }
-    
+
         /// <summary>
         /// Computes a random color
         /// </summary>
         /// <returns>Obtained color</returns>
-        private Color GetRandomColor() => new Color((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble());
+        private Color GetRandomColor() => ColorUtils.HSVToRGB((float)random.NextDouble() * 360, 0.75f, 0.75f);
     }
 }
