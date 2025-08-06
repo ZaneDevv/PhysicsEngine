@@ -19,6 +19,7 @@ namespace PhysicsEngine
 
         private bool wasLeftClickPressedLastFrame = false;
         private bool wasRightClickPressedLastFrame = false;
+        private bool wasKeyBPressedLastFrame = false;
 
         private Random random = new Random();
 
@@ -115,6 +116,21 @@ namespace PhysicsEngine
                 .SetPosition(new Vector2(mouse.X, mouse.Y))
                 .SetMass(radius / 2)
                 .Build());
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.B))
+            {
+                wasKeyBPressedLastFrame = true;
+            }
+            else if (wasKeyBPressedLastFrame)
+            {
+                wasKeyBPressedLastFrame = false;
+
+                foreach (Body body in this.ShapeList)
+                {
+                    Vector2 direction = body.Position - mouse.ToVector2();
+                    body.LinearVelocity += Vector2.Normalize(direction) * (float)(1e+3 * body.Mass / direction.Length());
+                }
             }
 
             base.Update(gameTime);

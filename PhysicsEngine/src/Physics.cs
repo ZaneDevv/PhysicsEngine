@@ -251,20 +251,6 @@ namespace PhysicsEngine.Physics
                     body2.LinearVelocity += Physics.frictionImpulses[index] / (float)body2.Mass;
                 }
             }
-
-            //double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
-            //double p = -minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
-
-            //if (body1.DoesPhysicsAffect)
-            //{
-            //    body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
-            //    body1.LinearVelocity -= normal * (float)(p / body1.Mass);
-            //}
-            //if (body2.DoesPhysicsAffect)
-            //{
-            //    body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
-            //    body2.LinearVelocity += normal * (float)(p / body2.Mass);
-            //}
         }
 
         /// <summary>
