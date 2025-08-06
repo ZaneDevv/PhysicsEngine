@@ -189,8 +189,12 @@ namespace PhysicsEngine.Collisions
         /// <param name="pointsAmount">Contact points amount [1, 2]</param>
         /// <param name="contactPoint1">First contact point</param>
         /// <param name="contactPoint2">Possible second contact point</param>
-        internal static void GetContactCollisionPoints(Body body1, Body body2, ref short pointsAmount, ref Vector3 contactPoint1, ref Vector3 contactPoint2)
+        internal static void GetContactCollisionPoints(Body body1, Body body2, out short pointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2)
         {
+            pointsAmount = 0;
+            contactPoint1 = Vector3.Zero;
+            contactPoint2 = Vector3.Zero;
+
             if (body1.BodyType is BodyType.Circle && body2.BodyType is BodyType.Circle)
             {
                 Circle circle1 = (Circle)body1.Shape;

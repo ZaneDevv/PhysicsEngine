@@ -9,7 +9,7 @@ namespace PhysicsEngine.Bodies
 
         private double mass = 1;
         private double restitution = 1;
-        private double intertia = 1;
+        private double intertia = -5;
 
         private bool isCollideable = true;
         private bool doesPhysicsAffect = true;

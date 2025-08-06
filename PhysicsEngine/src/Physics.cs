@@ -3,7 +3,6 @@ using PhysicsEngine.Render;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using System.Runtime.Intrinsics;
 
 namespace PhysicsEngine.Physics
 {
@@ -131,18 +130,71 @@ namespace PhysicsEngine.Physics
         private static void SolveCollisions(Body body1, Body body2, Vector2 normal, double depth)
         {
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
-            double p = -minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
 
-            if (body1.DoesPhysicsAffect)
+            PhysicsEngine.Collisions.Collision.GetContactCollisionPoints(body1, body2, out short contactPointsAmount, out Vector3 contactPoint1, out Vector3 contactPoint2);
+
+            Vector2[] contactPoints = new Vector2[] { new Vector2(contactPoint1.X, contactPoint1.Y), new Vector2(contactPoint2.X, contactPoint2.Y) };
+            Vector2[] impulses = new Vector2[2];
+            Vector2[] raList = new Vector2[2];
+            Vector2[] rbList = new Vector2[2];
+
+            for (byte index = 0; index < contactPointsAmount; index++)
             {
-                body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
-                body1.LinearVelocity -= normal * (float)(p / body1.Mass);
+                Vector2 ra = contactPoints[index] - body1.Position;
+                Vector2 rb = contactPoints[index] - body2.Position;
+
+                Vector2 raPerpendicular = new Vector2(-ra.Y, ra.X);
+                Vector2 rbPerpendicular = new Vector2(-rb.Y, rb.X);
+
+                Vector2 angularVelocityDirection1 = raPerpendicular * (float)body1.AngularVelocity;
+                Vector2 angularVelocityDirection2 = rbPerpendicular * (float)body2.AngularVelocity;
+
+                Vector2 relativeVelocity = body2.LinearVelocity + angularVelocityDirection2 - body1.LinearVelocity - angularVelocityDirection1;
+
+                double contactVelocityMagnitude = Vector2.Dot(normal, relativeVelocity);
+
+                double raPerpendicularDotNormal = Vector2.Dot(raPerpendicular, normal);
+                double rbPerpendicularDotNormal = Vector2.Dot(rbPerpendicular, normal);
+
+                double nominator = -minRestitution * contactVelocityMagnitude;
+                double denominator = 1 / body1.Mass + 1 / body2.Mass +
+                    (raPerpendicularDotNormal * raPerpendicularDotNormal) / body1.Inertia +
+                    (rbPerpendicularDotNormal * rbPerpendicularDotNormal) / body2.Inertia;
+
+                impulses[index] = (float)(nominator / denominator) * normal;
+                raList[index] = ra;
+                rbList[index] = rb;
             }
-            if (body2.DoesPhysicsAffect)
+
+            for (byte index = 0; index < contactPointsAmount; index++)
             {
-                body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
-                body2.LinearVelocity += normal * (float)(p / body2.Mass);
+                if (body1.DoesPhysicsAffect)
+                {
+                    body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+                    body1.AngularVelocity -= Physics.Determinant(normal, raList[index]) / body1.Inertia;
+                    body1.LinearVelocity -= impulses[index] / (float)body1.Mass;
+                }
+                if (body2.DoesPhysicsAffect)
+                {
+                    body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+                    body2.AngularVelocity -= Physics.Determinant(normal, rbList[index]) / body2.Inertia;
+                    body2.LinearVelocity += impulses[index] / (float)body2.Mass;
+                }
             }
+
+            //double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
+            //double p = -minRestitution * Vector2.Dot(body2.LinearVelocity - body1.LinearVelocity, normal) / (1 / body1.Mass + 1 / body2.Mass);
+
+            //if (body1.DoesPhysicsAffect)
+            //{
+            //    body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+            //    body1.LinearVelocity -= normal * (float)(p / body1.Mass);
+            //}
+            //if (body2.DoesPhysicsAffect)
+            //{
+            //    body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+            //    body2.LinearVelocity += normal * (float)(p / body2.Mass);
+            //}
         }
 
         /// <summary>
