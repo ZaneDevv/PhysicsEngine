@@ -5,5 +5,5 @@ I have always found physics rinventing and intriguing, motivating me to learn a 
 Since I am not familiar with `OpenGL` or `Vulkan`, I decided to make it using C# and a plugin called `MonoGame`, which extends the language with simple functions to draw polygons in the screen in a quite simple way.<br>
 
 <div align="center">
-    ![PhysicsVideo1](https://github.com/user-attachments/assets/c1112dad-28e7-4b6f-9ada-6f0ba2f30b84)
+    ![PhysicsVideo1](https://github.com/user-attachments/assets/4dd0086c-d5ff-4138-b91b-227ae26220b2)
 </div>
