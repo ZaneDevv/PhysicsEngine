@@ -171,13 +171,13 @@ namespace PhysicsEngine.Physics
                 if (body1.DoesPhysicsAffect)
                 {
                     body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
-                    body1.AngularVelocity -= Physics.Determinant(normal, raList[index]) / body1.Inertia;
+                    body1.AngularVelocity = -Physics.Determinant(normal, raList[index]) / body1.Inertia;
                     body1.LinearVelocity -= impulses[index] / (float)body1.Mass;
                 }
                 if (body2.DoesPhysicsAffect)
                 {
                     body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
-                    body2.AngularVelocity -= Physics.Determinant(normal, rbList[index]) / body2.Inertia;
+                    body2.AngularVelocity = Physics.Determinant(normal, rbList[index]) / body2.Inertia;
                     body2.LinearVelocity += impulses[index] / (float)body2.Mass;
                 }
             }
