@@ -138,14 +138,7 @@ namespace PhysicsEngine.Physics
         /// <param name="depth">How much are the bodies overlaping</param>
         private static void SolveCollisions(Body body1, Body body2, Vector2 normal, double depth)
         {
-            if (body1.DoesPhysicsAffect)
-            {
-                body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
-            }
-            if (body2.DoesPhysicsAffect)
-            {
-                body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
-            }
+            Physics.SolveOverlaping(body1, body2, normal, depth);
 
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
 
@@ -154,6 +147,43 @@ namespace PhysicsEngine.Physics
             Physics.contactPoints[0] = new Vector2(contactPoint1.X, contactPoint1.Y);
             Physics.contactPoints[1] = new Vector2(contactPoint2.X, contactPoint2.Y);
 
+            Physics.ComputeImpulse(body1, body2, normal, depth, minRestitution, contactPointsAmount);
+            Physics.ApplyImpulses(body1, body2, contactPointsAmount);
+
+            Physics.ComputeFrictionImpulse(body1, body2, normal, depth, minRestitution, contactPointsAmount);
+            Physics.ApplyFrictionImpulses(body1, body2, contactPointsAmount);
+        }
+
+        /// <summary>
+        /// Avoids the overlaping of the two specified bodies
+        /// </summary>
+        /// <param name="body1">First body</param>
+        /// <param name="body2">Second </param>
+        /// <param name="normal">Normal vector to the collision</param>
+        /// <param name="depth">How much are these two bodies overlaping</param>
+        private static void SolveOverlaping(Body body1, Body body2, Vector2 normal, double depth)
+        {
+            if (body1.DoesPhysicsAffect)
+            {
+                body1.Position -= normal * (float)depth / (body2.DoesPhysicsAffect ? 2 : 1);
+            }
+            if (body2.DoesPhysicsAffect)
+            {
+                body2.Position += normal * (float)depth / (body1.DoesPhysicsAffect ? 2 : 1);
+            }
+        }
+
+        /// <summary>
+        /// Calculates the impulses the bodies must have to solve the collision
+        /// </summary>
+        /// <param name="body1">First body</param>
+        /// <param name="body2">Second </param>
+        /// <param name="normal">Normal vector to the collision</param>
+        /// <param name="depth">How much are these two bodies overlaping</param>
+        /// <param name="minRestitution">The minimum restitution between these two bodies</param>
+        /// <param name="contactPointsAmount">How many contacts points are detected in the collision</param>
+        private static void ComputeImpulse(Body body1, Body body2, Vector2 normal, double depth, double minRestitution, short contactPointsAmount)
+        {
             for (byte index = 0; index < contactPointsAmount; index++)
             {
                 Vector2 ra = Physics.contactPoints[index] - body1.Position;
@@ -184,21 +214,19 @@ namespace PhysicsEngine.Physics
                 Physics.raList[index] = ra;
                 Physics.rbList[index] = rb;
             }
+        }
 
-            for (byte index = 0; index < contactPointsAmount; index++)
-            {
-                if (body1.DoesPhysicsAffect)
-                {
-                    body1.AngularVelocity -= Physics.Determinant(Physics.raList[index], Physics.impulses[index]) / body1.RotationalIntertia;
-                    body1.LinearVelocity -= Physics.impulses[index] / (float)body1.Mass;
-                }
-                if (body2.DoesPhysicsAffect)
-                {
-                    body2.AngularVelocity += Physics.Determinant(Physics.rbList[index], Physics.impulses[index]) / body2.RotationalIntertia;
-                    body2.LinearVelocity += Physics.impulses[index] / (float)body2.Mass;
-                }
-            }
-
+        /// <summary>
+        /// Calculates the friction the bodies must have to solve the collision
+        /// </summary>
+        /// <param name="body1">First body</param>
+        /// <param name="body2">Second </param>
+        /// <param name="normal">Normal vector to the collision</param>
+        /// <param name="depth">How much are these two bodies overlaping</param>
+        /// <param name="minRestitution">The minimum restitution between these two bodies</param>
+        /// <param name="contactPointsAmount">How many contacts points are detected in the collision</param>
+        private static void ComputeFrictionImpulse(Body body1, Body body2, Vector2 normal, double depth, double minRestitution, short contactPointsAmount)
+        {
             for (byte index = 0; index < contactPointsAmount; index++)
             {
                 double staticFriction = (body1.StaticFriction + body2.StaticFriction) / 2;
@@ -237,7 +265,39 @@ namespace PhysicsEngine.Physics
 
                 Physics.frictionImpulses[index] = frictionImpulse;
             }
+        }
 
+        /// <summary>
+        /// Apply the previously calculated impulses to both of the bodies
+        /// </summary>
+        /// <param name="body1">First body</param>
+        /// <param name="body2">Second </param>
+        /// <param name="contactPointsAmount">How many contacts points are detected in the collision</param>
+        private static void ApplyImpulses(Body body1, Body body2, short contactPointsAmount)
+        {
+            for (byte index = 0; index < contactPointsAmount; index++)
+            {
+                if (body1.DoesPhysicsAffect)
+                {
+                    body1.AngularVelocity -= Physics.Determinant(Physics.raList[index], Physics.impulses[index]) / body1.RotationalIntertia;
+                    body1.LinearVelocity -= Physics.impulses[index] / (float)body1.Mass;
+                }
+                if (body2.DoesPhysicsAffect)
+                {
+                    body2.AngularVelocity += Physics.Determinant(Physics.rbList[index], Physics.impulses[index]) / body2.RotationalIntertia;
+                    body2.LinearVelocity += Physics.impulses[index] / (float)body2.Mass;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply the previously calculated friction impulses to both of the bodies
+        /// </summary>
+        /// <param name="body1">First body</param>
+        /// <param name="body2">Second </param>
+        /// <param name="contactPointsAmount">How many contacts points are detected in the collision</param>
+        private static void ApplyFrictionImpulses(Body body1, Body body2, short contactPointsAmount)
+        {
             for (byte index = 0; index < contactPointsAmount; index++)
             {
                 if (body1.DoesPhysicsAffect)
