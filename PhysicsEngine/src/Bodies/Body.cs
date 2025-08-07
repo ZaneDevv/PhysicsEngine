@@ -10,7 +10,6 @@ namespace PhysicsEngine.Bodies
 
         private double mass;
         private double restitution;
-        private double inertia;
         private double staticFriction;
         private double dynamicFriction;
 
@@ -46,14 +45,13 @@ namespace PhysicsEngine.Bodies
         /// <param name="position">Body's position</param>
         /// <param name="rotation">Body's rotation</param>
         internal Body(
-                double mass, double restitution, double inertia, double staticFriction, double dynamicFriction,
+                double mass, double restitution, double staticFriction, double dynamicFriction,
                 bool isCollideable, bool doesPhysicsAffect,
                 BodyType bodyType, RenderShape shape, Vector2 position, double rotation
             )
         {
             this.mass = mass;
             this.restitution = restitution;
-            this.inertia = inertia;
             this.staticFriction = staticFriction;
             this.dynamicFriction = dynamicFriction;
 
@@ -139,12 +137,6 @@ namespace PhysicsEngine.Bodies
         {
             get => this.restitution;
             set => this.restitution = value;
-        }
-
-        internal double Inertia
-        {
-            get => this.inertia;
-            set => this.inertia = value;
         }
 
         internal BodyType BodyType

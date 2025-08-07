@@ -3,7 +3,7 @@
 2D Physics Engine is a software developed in C# wich simulates some basic bidimensional physics such as collisions and forces.
 I always found physics rinventing and intriguing, which motivated me a lot to learn about it and even combine it with computer science to make some simulations.<br>
 
-# What are a physics engines?
+# What are physics engines?
 
 Physics engines are softwares we as developers can develop to simulate some real life physics.
 Maybe it is not something developers must work on every day, but they are super useful not only to enhance your skills and keep learning programming algorithms and mathematics we can use later in other projects, but they are also used in game development.
@@ -16,3 +16,7 @@ Maybe it is not something developers must work on every day, but they are super 
 # Tools used
 
 Since I am not yet familiar neither with `OpenGL` nor `Vulkan`, I decided to develop this simulation using a plugin called [`MonoGame`](https://monogame.net/), which provides a many useful methods to simplify rendering objects on the screen.
+
+<div align="center">
+    <img src="./Images/Image3.gif" alt="Showcase3" width="60%" />
+</div>
