@@ -4,7 +4,7 @@ After all the work we have made all along, this last lessons will be a piece of 
 Before starting, we have to bear in mind that there are two types of friction<br>
 
 <ul>
-    <li><strong>Static friction</strong> is the friction experiments by </li>
+    <li><strong>Static friction</strong> is the friction experimented by two bodies in collision without movement.</li>
     <li><strong>Dynamic friction</strong>, also called as <em>kinetic friction</em>, is the friction two bodies experiment when at least one of them is moving while is touching the other body.</li>
 </ul>
 
