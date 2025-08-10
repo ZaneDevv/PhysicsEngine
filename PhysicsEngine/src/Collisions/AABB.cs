@@ -25,13 +25,13 @@
         /// </summary>
         /// <param name="aabb1">One AABB to compare</param>
         /// <param name="aabb2">The other AABB to compare</param>
-        /// <returns>Returns true if the two AABBs are overlaping and false if they are not</returns>
-        internal static bool AreOverlaping(AABB aabb1, AABB aabb2)
+        /// <returns>Returns true if the two AABBs are overlapping and false if they are not</returns>
+        internal static bool AreOverlapping(AABB aabb1, AABB aabb2)
         {
-            bool aabb1Overlaping = AreOverlaping(aabb1.minX, aabb1.maxX, aabb2.minX, aabb2.maxX);
-            bool aabb2Overlaping = AreOverlaping(aabb1.minY, aabb1.maxY, aabb2.minY, aabb2.maxY);
+            bool aabb1Overlapping = AreOverlapping(aabb1.minX, aabb1.maxX, aabb2.minX, aabb2.maxX);
+            bool aabb2Overlapping = AreOverlapping(aabb1.minY, aabb1.maxY, aabb2.minY, aabb2.maxY);
 
-            return aabb1Overlaping || aabb2Overlaping;
+            return aabb1Overlapping || aabb2Overlapping;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@
         /// <param name="max1">The frist line maximum extreme</param>
         /// <param name="min2">The second line minimum extreme</param>
         /// <param name="max2">The second line maximum extreme</param>
-        /// <returns>Returns if the lines defined by its extremes in 1D are overlaping</returns>
-        internal static bool AreOverlaping(double min1, double max1, double min2, double max2) => min1 < max2 && max1 > min2;
+        /// <returns>Returns if the lines defined by its extremes in 1D are overlapping</returns>
+        internal static bool AreOverlapping(double min1, double max1, double min2, double max2) => min1 < max2 && max1 > min2;
     }
 }

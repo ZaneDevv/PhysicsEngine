@@ -15,8 +15,12 @@ Maybe it is not something developers must work on every day, but they are super 
 
 # Tools used
 
-Since I am not yet familiar neither with `OpenGL` nor `Vulkan`, I decided to develop this simulation using a plugin called [`MonoGame`](https://monogame.net/), which provides a many useful methods to simplify rendering objects on the screen.
+Since I am not yet familiar either with `OpenGL` or `Vulkan`, I decided to develop this simulation using a plugin called [`MonoGame`](https://monogame.net/), which provides a many useful methods to simplify rendering objects on the screen.
 
 <div align="center">
     <img src="./Images/Image3.gif" alt="Showcase3" width="60%" />
 </div>
+
+# How could I make one myself?
+
+In order to practice, keep learning and helping possible people interesting in it, I made 6 lessons in this repository teaching all formulas and algorithms I have used so far.<br>You can find it in directiroy [`Lessons`](./Lessons/).

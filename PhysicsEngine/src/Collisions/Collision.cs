@@ -18,8 +18,8 @@ namespace PhysicsEngine.Collisions
         /// <param name="center2">Center position of the second circle</param>
         /// <param name="radius2">Radius of the second circle</param>
         /// <param name="normal">The collisions' normal vector</param>
-        /// <param name="depth">How much are the circles overlaping</param>
-        /// <returns>Returns if the two circles are overlaping</returns>
+        /// <param name="depth">How much are the circles overlapping</param>
+        /// <returns>Returns if the two circles are overlapping</returns>
         internal static bool Circle_VS_Circle(Vector3 center1, double radius1, Vector3 center2, double radius2, ref Vector3 normal, ref double depth)
         {
             double radiusAddition = radius1 + radius2;
@@ -45,8 +45,8 @@ namespace PhysicsEngine.Collisions
         /// <param name="vertices1">First polygon's vertices</param>
         /// <param name="vertices2">Second polygon's vertices</param>
         /// <param name="normal">The collisions' normal vector</param>
-        /// <param name="depth">How much are the polygons overlaping</param>
-        /// <returns>Returns if the two polygons are overlaping</returns>
+        /// <param name="depth">How much are the polygons overlapping</param>
+        /// <returns>Returns if the two polygons are overlapping</returns>
         internal static bool Polygon_VS_Polygon(Quad quad1, Quad quad2, ref Vector3 normal, ref double depth)
         {
             normal = Vector3.Zero;
@@ -65,7 +65,7 @@ namespace PhysicsEngine.Collisions
                 VerticesProjectionOntoAxis(axis, vertices1, out double min1, out double max1);
                 VerticesProjectionOntoAxis(axis, vertices2, out double min2, out double max2);
 
-                if (!AABB.AreOverlaping(min1, max1, min2, max2)) return false;
+                if (!AABB.AreOverlapping(min1, max1, min2, max2)) return false;
 
                 double minDepth = Math.Min(max1 - min2, max2 - min1);
 
@@ -91,7 +91,7 @@ namespace PhysicsEngine.Collisions
         /// <param name="circlePosition">Circle's center position</param>
         /// <param name="circleRadius">Circle's radius</param>
         /// <param name="normal">The collisions' normal vector</param>
-        /// <param name="depth">How much are the polygons overlaping</param>
+        /// <param name="depth">How much are the polygons overlapping</param>
         /// <returns></returns>
         internal static bool Circle_VS_Polygon(Vector3[] polygonVertices, Vector3 circlePosition, double circleRadius, ref Vector3 normal, ref double depth)
         {
@@ -128,7 +128,7 @@ namespace PhysicsEngine.Collisions
                 VerticesProjectionOntoAxis(axis, polygonVertices, out double min1, out double max1);
                 VerticesProjectionOntoAxis(axis, circlePseudovertices, out double min2, out double max2);
 
-                if (!AABB.AreOverlaping(min1, max1, min2, max2)) return false;
+                if (!AABB.AreOverlapping(min1, max1, min2, max2)) return false;
 
                 double minDepth = Math.Min(max1 - min2, max2 - min1);
 

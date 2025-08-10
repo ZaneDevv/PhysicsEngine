@@ -91,7 +91,7 @@ namespace PhysicsEngine.Physics
 
                     if (body1 == body2) continue;
 
-                    if (!Collisions.AABB.AreOverlaping(body1.Shape.GetAABB(), body2.Shape.GetAABB())) continue;
+                    if (!Collisions.AABB.AreOverlapping(body1.Shape.GetAABB(), body2.Shape.GetAABB())) continue;
 
                     Vector3 normal = Vector3.Zero;
                     double depth = 0;
@@ -135,10 +135,10 @@ namespace PhysicsEngine.Physics
         /// <param name="body1">First collided body</param>
         /// <param name="body2">Second collided body</param>
         /// <param name="normal">Collision normal vector</param>
-        /// <param name="depth">How much are the bodies overlaping</param>
+        /// <param name="depth">How much are the bodies overlapping</param>
         private static void SolveCollisions(Body body1, Body body2, Vector2 normal, double depth)
         {
-            Physics.SolveOverlaping(body1, body2, normal, depth);
+            Physics.SolveOverlapping(body1, body2, normal, depth);
 
             double minRestitution = Math.Min(body1.Restitution, body2.Restitution);
 
@@ -155,13 +155,13 @@ namespace PhysicsEngine.Physics
         }
 
         /// <summary>
-        /// Avoids the overlaping of the two specified bodies
+        /// Avoids the overlapping of the two specified bodies
         /// </summary>
         /// <param name="body1">First body</param>
         /// <param name="body2">Second </param>
         /// <param name="normal">Normal vector to the collision</param>
-        /// <param name="depth">How much are these two bodies overlaping</param>
-        private static void SolveOverlaping(Body body1, Body body2, Vector2 normal, double depth)
+        /// <param name="depth">How much are these two bodies overlapping</param>
+        private static void SolveOverlapping(Body body1, Body body2, Vector2 normal, double depth)
         {
             if (body1.DoesPhysicsAffect)
             {
@@ -179,7 +179,7 @@ namespace PhysicsEngine.Physics
         /// <param name="body1">First body</param>
         /// <param name="body2">Second </param>
         /// <param name="normal">Normal vector to the collision</param>
-        /// <param name="depth">How much are these two bodies overlaping</param>
+        /// <param name="depth">How much are these two bodies overlapping</param>
         /// <param name="minRestitution">The minimum restitution between these two bodies</param>
         /// <param name="contactPointsAmount">How many contacts points are detected in the collision</param>
         private static void ComputeImpulse(Body body1, Body body2, Vector2 normal, double depth, double minRestitution, short contactPointsAmount)
@@ -222,7 +222,7 @@ namespace PhysicsEngine.Physics
         /// <param name="body1">First body</param>
         /// <param name="body2">Second </param>
         /// <param name="normal">Normal vector to the collision</param>
-        /// <param name="depth">How much are these two bodies overlaping</param>
+        /// <param name="depth">How much are these two bodies overlapping</param>
         /// <param name="minRestitution">The minimum restitution between these two bodies</param>
         /// <param name="contactPointsAmount">How many contacts points are detected in the collision</param>
         private static void ComputeFrictionImpulse(Body body1, Body body2, Vector2 normal, double depth, double minRestitution, short contactPointsAmount)
